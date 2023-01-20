@@ -1,4 +1,4 @@
-import authServices from "../services/auth-services.js";
+import MongooseServices from "../services/mongoose-services.js";
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import modelRegistration from "../models/model-registration.js";
@@ -20,17 +20,28 @@ class AuthController {
       const { login, email, password } = req.body;
       const errors = validationResult(req);
       checkErrors(errors);
-      const candidateLogin = await modelRegistration.findOne({ login });
-      const candidateEmail = await modelRegistration.findOne({ email });
-      if (candidateLogin) {
-        throw new Error("Пользователь с таким логином уже существует");
-      }
-      if (candidateEmail) {
-        throw new Error("Пользователь с такой почтой уже существует");
+      const candidateLogin = await MongooseServices.findBy(
+        "login",
+        login,
+        modelRegistration
+      );
+      const candidateEmail = await MongooseServices.findBy(
+        "email",
+        email,
+        modelRegistration
+      );
+      if (candidateLogin || candidateEmail) {
+        console.log(candidateLogin, candidateEmail);
+        const allErrors = [];
+        if (candidateLogin)
+          allErrors.push("Пользователь с таким логином уже существует");
+        if (candidateEmail)
+          allErrors.push("Пользователь с таким email логином уже существует");
+        throw new Error(allErrors.join(". "));
       }
 
       const hashPassword = await AuthController.getHashPassword(password);
-      const user = await authServices.createUser({
+      const user = await MongooseServices.create(modelRegistration, {
         login,
         email,
         password: hashPassword,
@@ -52,7 +63,11 @@ class AuthController {
       const errors = validationResult(req);
       checkErrors(errors);
       const { email, password } = req.body;
-      const isUserExist = await authServices.findUser(email);
+      const isUserExist = await MongooseServices.findBy(
+        "email",
+        email,
+        modelRegistration
+      );
       if (!isUserExist) {
         throw new Error("Пользователя с такой почтой не существует");
       }
