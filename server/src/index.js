@@ -1,8 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import router from "./router/router.js";
-import { errorMiddleware } from "./middlewares/error-middleware.js";
-import { isVladToken } from "./middlewares/isValidToken.js";
+import { isVladToken } from "./middlewares/is-valid-token.js";
 const PORT = 5000;
 const DB_URL = `mongodb+srv://admin:admin_app@cluster0.etgahy6.mongodb.net/?retryWrites=true&w=majority`;
 

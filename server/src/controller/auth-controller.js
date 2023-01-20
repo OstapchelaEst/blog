@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 import modelRegistration from "../models/model-registration.js";
 import bcrypt from "bcrypt";
 import { sendError } from "../exaptions/send-errors.js";
+import { checkErrors } from "../validation/check-errors-array.js";
 
 export const SECRET_TOKEN_KEY = "SECRETNII_SEKRET";
 const LIVE_CICLE_TOKEN = "1d";
@@ -18,12 +19,7 @@ class AuthController {
     try {
       const { login, email, password } = req.body;
       const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        const errorMessage = errors.errors.map((error) => error.msg).join(".");
-        throw new Error(errorMessage);
-      }
-
+      checkErrors(errors);
       const candidateLogin = await modelRegistration.findOne({ login });
       const candidateEmail = await modelRegistration.findOne({ email });
       if (candidateLogin) {
@@ -54,10 +50,7 @@ class AuthController {
   async authorizacion(req, res) {
     try {
       const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        const errorMessage = errors.errors.map((error) => error.msg).join(".");
-        throw new Error(errorMessage);
-      }
+      checkErrors(errors);
       const { email, password } = req.body;
       const isUserExist = await authServices.findUser(email);
       if (!isUserExist) {
