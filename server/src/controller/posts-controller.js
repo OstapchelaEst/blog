@@ -18,7 +18,6 @@ class PostsController {
       const errors = validationResult(req);
       checkErrors(errors);
       const newPost = await modelPosts.create(req.body);
-      const a = await mongooseServices.create(modelPosts, req.body);
       res.status(200).json(newPost);
     } catch (error) {
       sendError(res, error);
