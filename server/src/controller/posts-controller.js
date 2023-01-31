@@ -1,30 +1,30 @@
-import { sendError } from "../exaptions/send-errors.js";
+import { APIerror } from "../exceptions/send-errors.js";
 import modelPosts from "../models/model-posts.js";
 import { validationResult } from "express-validator";
 import { checkErrors } from "../validation/check-errors-array.js";
 import mongooseServices from "../services/mongoose-services.js";
 class PostsController {
-  async getAllPosts(req, res) {
+  async getAllPosts(req, res, next) {
     try {
       const allPosts = await mongooseServices.findAll(modelPosts);
       res.status(200).json(allPosts);
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 
-  async createPost(req, res) {
+  async createPost(req, res, next) {
     try {
       const errors = validationResult(req);
       checkErrors(errors);
       const newPost = await modelPosts.create(req.body);
       res.status(200).json(newPost);
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 
-  async getAllUserPosts(req, res) {
+  async getAllUserPosts(req, res, next) {
     try {
       const errors = validationResult(req);
       checkErrors(errors);
@@ -32,11 +32,11 @@ class PostsController {
       const allPosts = await mongooseServices.findAll(modelPosts, { authorID });
       res.status(200).json(allPosts);
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 
-  async deletePost(req, res) {
+  async deletePost(req, res, next) {
     try {
       const postID = req.body.id;
       const isExistPost = await mongooseServices.findBy(
@@ -45,7 +45,7 @@ class PostsController {
         modelPosts
       );
       if (!isExistPost) {
-        throw new Error("Поста с таким ID не существует");
+        throw APIerror.BadRequest("Поста с таким ID не существует",[]);
       }
       const deletedPost = await mongooseServices.findAndDeleteByID(
         modelPosts,
@@ -53,7 +53,7 @@ class PostsController {
       );
       res.status(200).json(deletedPost);
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 }

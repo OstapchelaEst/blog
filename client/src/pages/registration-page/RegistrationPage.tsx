@@ -2,6 +2,8 @@ import { Box, Button, Typography } from '@mui/material';
 import CustomInput from 'components/UI/CustomInput';
 import React from 'react';
 import { useForm, FieldValues } from 'react-hook-form';
+import { fetchCreateUser } from 'store/async-actions/authorization';
+import { useAppDispatch } from 'store/custom-hooks/custom-hooks';
 
 const validationFirstPassord = (firstPassword: string): true | string => {
   return firstPassword.length > 5 ? true : 'Миниму 6 символа';
@@ -35,9 +37,10 @@ const RegistrationPage = () => {
     handleSubmit,
     formState: { isValid },
   } = useForm({ mode: 'onBlur' });
-
+  const dispatch = useAppDispatch();
   const onSubmit = (data: FieldValues) => {
     console.log(data);
+    dispatch(fetchCreateUser());
   };
 
   return (

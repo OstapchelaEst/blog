@@ -1,7 +1,7 @@
 import Router from "express";
 import authController from "../controller/auth-controller.js";
 import postsController from "../controller/posts-controller.js";
-import { isVladToken } from "../middlewares/is-valid-token.js";
+import { isVladToken } from "../middlewares/is-valid-token-middleware.js";
 import { createPostValidation } from "../validation/validation-create-post.js";
 import { getAllUserPostsValidation } from "../validation/validation-get-all-user-posts.js";
 import {
@@ -42,5 +42,7 @@ router.delete(
   isVladToken,
   postsController.deletePost
 );
+router.delete("/logout", isVladToken, authController.logout);
+router.post("/refresh", isVladToken, authController.refresh);
 
 export default router;

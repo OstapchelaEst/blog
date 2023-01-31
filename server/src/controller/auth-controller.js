@@ -3,11 +3,9 @@ import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import modelRegistration from "../models/model-registration.js";
 import bcrypt from "bcrypt";
-import { sendError } from "../exaptions/send-errors.js";
 import { checkErrors } from "../validation/check-errors-array.js";
-
-export const SECRET_TOKEN_KEY = "SECRETNII_SEKRET";
-const LIVE_CICLE_TOKEN = "1d";
+import tokenServices from "../services/token-services.js";
+import { APIerror } from "../exceptions/send-errors.js";
 
 class AuthController {
   static async getHashPassword(password) {
@@ -15,7 +13,7 @@ class AuthController {
     return await bcrypt.hash(String(password), salt);
   }
 
-  async registration(req, res) {
+  async registration(req, res, next) {
     try {
       const { login, email, password } = req.body;
       const errors = validationResult(req);
@@ -31,13 +29,12 @@ class AuthController {
         modelRegistration
       );
       if (candidateLogin || candidateEmail) {
-        console.log(candidateLogin, candidateEmail);
         const allErrors = [];
         if (candidateLogin)
           allErrors.push("Пользователь с таким логином уже существует");
         if (candidateEmail)
           allErrors.push("Пользователь с таким email логином уже существует");
-        throw new Error(allErrors.join(". "));
+        throw APIerror.BadRequest(allErrors.join(". "), []);
       }
 
       const hashPassword = await AuthController.getHashPassword(password);
@@ -48,17 +45,25 @@ class AuthController {
       });
 
       const userId = String(user._id);
-      const token = jwt.sign({ login, email, userId }, SECRET_TOKEN_KEY, {
-        expiresIn: LIVE_CICLE_TOKEN,
+      const { accessToken, refreshToken } = tokenServices.generateTokens({
+        login,
+        email,
+        userId,
       });
 
-      res.status(200).json({ token });
+      await tokenServices.saveToken(userId, refreshToken);
+
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.status(200).json({ login, email, userId, accessToken });
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 
-  async authorizacion(req, res) {
+  async authorizacion(req, res, next) {
     try {
       const errors = validationResult(req);
       checkErrors(errors);
@@ -69,33 +74,70 @@ class AuthController {
         modelRegistration
       );
       if (!isUserExist) {
-        throw new Error("Пользователя с такой почтой не существует");
+        throw APIerror.BadRequest("Пользователя с такой почтой не существует");
       }
+
       const isValidPassword = bcrypt.compare(password, isUserExist.password);
       if (!isValidPassword) {
-        throw new Error("Не верный пароль");
+        throw APIerror.BadRequest("Не верный пароль", []);
       }
+
       const { login, _id } = isUserExist;
-      console.log(login, _id);
-      const token = jwt.sign(
-        { login, email, userId: String(_id) },
-        SECRET_TOKEN_KEY,
-        {
-          expiresIn: LIVE_CICLE_TOKEN,
-        }
-      );
-      res.status(200).json({ token });
+      const { accessToken, refreshToken } = tokenServices.generateTokens({
+        login,
+        email,
+        userId: String(_id),
+      });
+      await tokenServices.saveToken(_id, refreshToken);
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.status(200).json({ login, email, userId: _id, accessToken });
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 
-  async getAllUsers(req, res) {
+  async logout(req, res, next) {
+    try {
+      const { refreshToken } = req.cookies;
+      const token = await tokenServices.removeToken(refreshToken);
+      res.clearCookie("refreshToken");
+      res.status(200).json(token);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async refresh(req, res, next) {
+    try {
+      const oldToken = req.headers.authorization.split(" ")[1];
+      console.log(oldToken);
+      const { login, email, userId } = jwt.decode(oldToken);
+
+      const { accessToken, refreshToken } = tokenServices.generateTokens({
+        login,
+        email,
+        userId,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+
+      res.status(200).json({ login, email, userId, accessToken });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAllUsers(req, res, next) {
     try {
       const allUsers = await modelRegistration.find();
       res.status(200).json(allUsers);
     } catch (error) {
-      sendError(res, error);
+      next(error);
     }
   }
 }

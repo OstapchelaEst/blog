@@ -5,3 +5,5 @@ export const ROUTHES = {
   AUTHORIZATION: '/authorization',
   ERROR_PAGE: '/error',
 };
+
+export const BASIC_URL = 'http://localhost:5000';

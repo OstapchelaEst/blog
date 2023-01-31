@@ -1,4 +1,4 @@
-import AuthorizationPage from 'pages/authorization-page/authorization-page';
+import AuthorizationPage from 'pages/authorization-page/AuthorizationPage';
 import React from 'react';
 import { Route, Routes } from 'react-router';
 import MiniDrawer from './components/UI/BaseLayout';

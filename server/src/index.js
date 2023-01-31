@@ -1,15 +1,21 @@
 import express from "express";
 import mongoose from "mongoose";
 import router from "./router/router.js";
-import { isVladToken } from "./middlewares/is-valid-token.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { isVladToken } from "./middlewares/is-valid-token-middleware.js";
+import { errorMiddleware } from "./middlewares/error-handler-middleware.js";
 const PORT = 5000;
 const DB_URL = `mongodb+srv://admin:admin_app@cluster0.etgahy6.mongodb.net/?retryWrites=true&w=majority`;
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
 app.use("", router);
 app.use(isVladToken);
+app.use(errorMiddleware);
 mongoose.set("strictQuery", false);
 
 const startApp = async () => {

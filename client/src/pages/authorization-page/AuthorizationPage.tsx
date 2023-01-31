@@ -2,6 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import CustomInput from 'components/UI/CustomInput';
 import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+
 const AuthorizationPage = () => {
   const {
     control,
@@ -9,7 +10,6 @@ const AuthorizationPage = () => {
     handleSubmit,
     formState: { isValid },
   } = useForm({ mode: 'onBlur' });
-
   const onSubmit = (data: FieldValues) => {
     console.log(data);
   };
