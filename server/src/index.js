@@ -11,8 +11,14 @@ const DB_URL = `mongodb+srv://admin:admin_app@cluster0.etgahy6.mongodb.net/?retr
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
 app.use(cookieParser());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+  })
+);
 app.use("", router);
 app.use(isVladToken);
 app.use(errorMiddleware);

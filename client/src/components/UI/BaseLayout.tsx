@@ -9,6 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -16,18 +17,21 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Outlet } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { ROUTHES } from '../../constants/constants';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import ArticleIcon from '@mui/icons-material/Article';
 import FollowTheSignsIcon from '@mui/icons-material/FollowTheSigns';
 import { Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
+import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+import { fetchLogout } from 'store/async-actions/logout';
+import TransitionsModal from 'components/ModalWindow';
 
 const drawerWidth = 240;
 
@@ -142,6 +146,42 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 );
 
+const navigationData = [
+  {
+    text: 'Home page',
+    routh: ROUTHES.HOME_PAGE,
+    icon: <HomeIcon />,
+  },
+  {
+    text: 'Profile',
+    routh: ROUTHES.USER,
+    icon: <AccountCircleIcon />,
+  },
+  {
+    text: 'Posts',
+    routh: ROUTHES.POSTS,
+    icon: <ArticleIcon />,
+  },
+];
+
+const authData = [
+  {
+    text: 'Sign in',
+    routh: ROUTHES.AUTHORIZATION,
+    icon: <LockOpenIcon />,
+  },
+  {
+    text: 'Sign up',
+    routh: ROUTHES.REGISTRATION,
+    icon: <FollowTheSignsIcon />,
+  },
+];
+
+const logoutData = {
+  text: 'Logout',
+  routh: ROUTHES.HOME_PAGE,
+  icon: <LogoutIcon />,
+};
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -154,31 +194,12 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const navigationData = [
-    {
-      text: 'Home page',
-      routh: ROUTHES.HOME_PAGE,
-      icon: <HomeIcon />,
-    },
-    {
-      text: 'PROFILE',
-      routh: ROUTHES.USER,
-      icon: <AccountCircleIcon />,
-    },
-  ];
+  const { isAuth } = useAppSelector((state) => state.AuthorizationSlice);
+  const dispatch = useAppDispatch();
 
-  const authData = [
-    {
-      text: 'Sign in',
-      routh: ROUTHES.AUTHORIZATION,
-      icon: <LockOpenIcon />,
-    },
-    {
-      text: 'Sign up',
-      routh: ROUTHES.REGISTRATION,
-      icon: <FollowTheSignsIcon />,
-    },
-  ];
+  const logout = async () => {
+    dispatch(fetchLogout());
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -200,6 +221,7 @@ export default function MiniDrawer() {
           <Typography sx={{ flexGrow: 1 }} variant="h6" noWrap component="div">
             Mini blog
           </Typography>
+          <TransitionsModal />
           <Search sx={{ justifySelf: 'flex-end' }}>
             <SearchIconWrapper>
               <SearchIcon />
@@ -216,70 +238,109 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {navigationData.map((data, index) => (
-            <NavLink key={data.text} to={data.routh}>
-              <ListItem disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
+          {isAuth &&
+            navigationData.map((data) => (
+              <NavLink key={data.text} to={data.routh}>
+                <ListItem disablePadding sx={{ display: 'block' }}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
                     }}
                   >
-                    {data.icon}
-                  </ListItemIcon>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {data.icon}
+                    </ListItemIcon>
 
-                  <ListItemText primary={data.text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            </NavLink>
-          ))}
+                    <ListItemText primary={data.text} sx={{ opacity: open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              </NavLink>
+            ))}
         </List>
         <Divider />
         <List>
-          {authData.map((data, index) => (
-            <ListItem key={data.text} disablePadding sx={{ display: 'block' }}>
-              <NavLink to={data.routh}>
-                <ListItemButton
+          {isAuth ? (
+            <ListItem key={logoutData.text} disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
+                onClick={logout}
+                sx={{
+                  minHeight: 53,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
                   sx={{
-                    minHeight: 53,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
                   }}
                 >
-                  <ListItemIcon
+                  {logoutData.icon}
+                </ListItemIcon>
+
+                <Button
+                  fullWidth={true}
+                  variant="contained"
+                  sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
+                >
+                  {logoutData.text}
+                </Button>
+              </ListItemButton>
+            </ListItem>
+          ) : (
+            authData.map((data) => (
+              <ListItem key={data.text} disablePadding sx={{ display: 'block' }}>
+                <NavLink to={data.routh}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      minHeight: 53,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
                     }}
                   >
-                    {data.icon}
-                  </ListItemIcon>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {data.icon}
+                    </ListItemIcon>
 
-                  <Button
-                    fullWidth={true}
-                    variant="contained"
-                    sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
-                  >
-                    {data.text}
-                  </Button>
-                </ListItemButton>
-              </NavLink>
-            </ListItem>
-          ))}
+                    <Button
+                      fullWidth={true}
+                      variant="contained"
+                      sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
+                    >
+                      {data.text}
+                    </Button>
+                  </ListItemButton>
+                </NavLink>
+              </ListItem>
+            ))
+          )}
         </List>
       </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', p: 3 }}
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          p: 3,
+          backgroundColor: '#ebedf0',
+        }}
       >
         <DrawerHeader />
         <Outlet />

@@ -4,6 +4,8 @@ export const ROUTHES = {
   REGISTRATION: '/registration',
   AUTHORIZATION: '/authorization',
   ERROR_PAGE: '/error',
+  LOGOUT: '/logout',
+  POSTS: '/posts',
 };
 
 export const BASIC_URL = 'http://localhost:5000';

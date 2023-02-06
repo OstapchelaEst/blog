@@ -23,7 +23,7 @@ router.post(
 );
 router.get("/all-users", isVladToken, authController.getAllUsers);
 
-router.get("/all-posts", postsController.getAllPosts);
+router.get("/all-posts", isVladToken, postsController.getAllPosts);
 router.post(
   "/all-user-posts",
   getAllUserPostsValidation,

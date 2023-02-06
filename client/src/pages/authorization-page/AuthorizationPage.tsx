@@ -1,18 +1,41 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, FormHelperText, Typography } from '@mui/material';
 import CustomInput from 'components/UI/CustomInput';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import { Navigate, useNavigate } from 'react-router';
+import { fetchAuthorizationUser } from 'store/async-actions/authorization';
+import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+import { AuthorizationSlice } from 'store/slices/authorization-slice';
+import { IAuthUser } from '../registration-page/RegistrationPage';
 
 const AuthorizationPage = () => {
   const {
     control,
-    reset,
     handleSubmit,
     formState: { isValid },
   } = useForm({ mode: 'onBlur' });
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { responseErrors, isAuth } = useAppSelector((state) => state.AuthorizationSlice);
+  const { resetResponseError } = AuthorizationSlice.actions;
+
+  const onSubmit = async (data: FieldValues | Omit<IAuthUser, 'login'>) => {
+    const response = await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>));
+    if (response.type !== 'authorization-user/rejected') {
+      navigate('/');
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetResponseError());
+    };
+  }, [resetResponseError, dispatch]);
+
+  if (isAuth) {
+    return <Navigate to={'/'} />;
+  }
 
   return (
     <Box
@@ -46,9 +69,9 @@ const AuthorizationPage = () => {
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CustomInput
-            name="login"
+            name="email"
             control={control}
-            label="Login"
+            label="Email"
             type="text"
             fullWidth
             rules={{
@@ -77,6 +100,9 @@ const AuthorizationPage = () => {
               },
             }}
           />
+          <FormHelperText error sx={{ mb: 1 }}>
+            {responseErrors}
+          </FormHelperText>
           <Button disabled={!isValid} type={'submit'} fullWidth={true} variant="contained">
             {'Submit'}
           </Button>

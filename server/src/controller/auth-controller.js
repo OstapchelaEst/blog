@@ -30,11 +30,20 @@ class AuthController {
       );
       if (candidateLogin || candidateEmail) {
         const allErrors = [];
-        if (candidateLogin)
+        const errorsArr = [];
+        if (candidateLogin) {
           allErrors.push("Пользователь с таким логином уже существует");
-        if (candidateEmail)
-          allErrors.push("Пользователь с таким email логином уже существует");
-        throw APIerror.BadRequest(allErrors.join(". "), []);
+          errorsArr.push({
+            login: "Пользователь с таким логином уже существует",
+          });
+        }
+        if (candidateEmail) {
+          allErrors.push("Пользователь с таким email  уже существует");
+          errorsArr.push({
+            email: "Пользователь с таким email  уже существует",
+          });
+        }
+        throw APIerror.BadRequest(allErrors.join(". "), errorsArr);
       }
 
       const hashPassword = await AuthController.getHashPassword(password);
@@ -73,13 +82,22 @@ class AuthController {
         email,
         modelRegistration
       );
+
       if (!isUserExist) {
-        throw APIerror.BadRequest("Пользователя с такой почтой не существует");
+        throw APIerror.BadRequest("Пользователя с такой почтой не существует", [
+          { email: "Пользователя с такой почтой не существует" },
+        ]);
       }
 
-      const isValidPassword = bcrypt.compare(password, isUserExist.password);
+      const isValidPassword = await bcrypt.compare(
+        password,
+        isUserExist.password
+      );
+
       if (!isValidPassword) {
-        throw APIerror.BadRequest("Не верный пароль", []);
+        throw APIerror.BadRequest("Не верный пароль", [
+          { password: "Неверный пароль" },
+        ]);
       }
 
       const { login, _id } = isUserExist;
@@ -89,9 +107,11 @@ class AuthController {
         userId: String(_id),
       });
       await tokenServices.saveToken(_id, refreshToken);
+      res.header("Access-Control-Allow-Credentials", true);
       res.cookie("refreshToken", refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        expires: new Date(Date.now() + 900000),
       });
       res.status(200).json({ login, email, userId: _id, accessToken });
     } catch (error) {
@@ -102,7 +122,9 @@ class AuthController {
   async logout(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
+      console.log(refreshToken);
       const token = await tokenServices.removeToken(refreshToken);
+      console.log(token);
       res.clearCookie("refreshToken");
       res.status(200).json(token);
     } catch (error) {
