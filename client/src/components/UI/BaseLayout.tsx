@@ -30,8 +30,9 @@ import { Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
-import { fetchLogout } from 'store/async-actions/logout';
+import { fetchLogout } from 'store/async-actions/authorization/logout';
 import TransitionsModal from 'components/ModalWindow';
+import CreatePostForm from 'components/CreatePostForm';
 
 const drawerWidth = 240;
 
@@ -221,7 +222,9 @@ export default function MiniDrawer() {
           <Typography sx={{ flexGrow: 1 }} variant="h6" noWrap component="div">
             Mini blog
           </Typography>
-          <TransitionsModal />
+          <TransitionsModal buttonText={'Create post'} stylesButton={{ color: 'white' }}>
+            <CreatePostForm />
+          </TransitionsModal>
           <Search sx={{ justifySelf: 'flex-end' }}>
             <SearchIconWrapper>
               <SearchIcon />

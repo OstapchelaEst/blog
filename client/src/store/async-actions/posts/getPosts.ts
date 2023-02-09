@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { IPost } from 'store/slices/posts-slice';
-import $api from '../../http/index';
+import { IPost } from 'store/slices/iterfaces/PostsSliceInterfaces';
+import $api from '../../../http/index';
 
 export const fetchGetPosts = createAsyncThunk<IPost[], void, { rejectValue: string }>(
   'get-posts',

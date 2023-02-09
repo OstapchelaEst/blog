@@ -4,40 +4,46 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { useAppSelector } from 'store/custom-hooks/custom-hooks';
-import { useNavigate } from 'react-router';
-import CreatePostForm from './CreatePostForm';
+import { Theme } from '@emotion/react';
+import { SxProps } from '@mui/material';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  maxWidth: 600,
+  width: '100%',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '3px solid #1976d2',
+  borderRadius: 5,
   boxShadow: 24,
   p: 4,
 };
 
-export default function TransitionsModal() {
-  const { isAuth } = useAppSelector((state) => state.AuthorizationSlice);
-  const navigate = useNavigate();
+export default function TransitionsModal({
+  children,
+  buttonText,
+  stylesButton,
+}: {
+  children: JSX.Element;
+  buttonText: string;
+  stylesButton?: SxProps<Theme>;
+}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
-    if (isAuth) {
-      setOpen(true);
-    } else {
-      navigate('/authorization');
-    }
+    setOpen(true);
   };
   const handleClose = () => setOpen(false);
 
+  const clone = React.cloneElement(children, {
+    closeModal: handleClose,
+  });
+
   return (
     <div>
-      <Button sx={{ color: 'white' }} onClick={handleOpen}>
-        Create post
+      <Button sx={stylesButton} onClick={handleOpen}>
+        {buttonText}
       </Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -51,9 +57,7 @@ export default function TransitionsModal() {
         }}
       >
         <Fade in={open}>
-          <Box sx={style}>
-            <CreatePostForm />
-          </Box>
+          <Box sx={style}>{clone}</Box>
         </Fade>
       </Modal>
     </div>

@@ -1,5 +1,3 @@
 import { body } from "express-validator";
 
-export const getAllUserPostsValidation = [
-  body("id", "Нужен ID юзера").isLength({ min: "1" }),
-];
+export const getAllUserPostsValidation = [body("id", "Invalid ID").isMongoId()];

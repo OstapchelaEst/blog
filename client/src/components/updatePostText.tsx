@@ -1,30 +1,29 @@
 import { Button } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
-import { fetchCreatePost } from 'store/async-actions/posts/createPost';
-import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+import { fetchUpdatePostText } from 'store/async-actions/posts/updatePostText';
+
+import { useAppDispatch } from 'store/custom-hooks/custom-hooks';
 import CustomInput from './UI/CustomInput';
 
-const validationCreatePost = (str: string): string | true => {
+const validationLengthPost = (str: string): string | true => {
   return str.length > 140 ? 'Maximum length 140 symbols' : true;
 };
 
-const CreatePostForm = ({ closeModal }: { closeModal?: () => void }) => {
+const UpdatePostText = ({
+  closeModal,
+  idPost,
+  text,
+}: {
+  closeModal?: () => void;
+  idPost: string;
+  text: string;
+}) => {
   const { control, handleSubmit } = useForm({ mode: 'onChange' });
   const dispatch = useAppDispatch();
-  const { isAuth } = useAppSelector((state) => state.AuthorizationSlice);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuth) {
-      if (closeModal) closeModal();
-      navigate('/authorization');
-    }
-  }, [isAuth, navigate, closeModal]);
 
   const onSubmit = async (data: FieldValues | { text: string }) => {
-    await dispatch(fetchCreatePost(data as { text: string }));
+    await dispatch(fetchUpdatePostText({ id: idPost, newText: data.text }));
     if (closeModal) closeModal();
   };
   return (
@@ -36,10 +35,11 @@ const CreatePostForm = ({ closeModal }: { closeModal?: () => void }) => {
         type="text"
         multiline
         fullWidth
+        oldValue={text}
         rules={{
           required: true,
           validate: {
-            customFN: validationCreatePost,
+            customFN: validationLengthPost,
           },
         }}
         sx={{ mb: 2 }}
@@ -49,10 +49,10 @@ const CreatePostForm = ({ closeModal }: { closeModal?: () => void }) => {
         variant="contained"
         sx={{ ml: 'auto', mr: 'auto', display: 'block', width: '100%' }}
       >
-        Create
+        Update
       </Button>
     </form>
   );
 };
 
-export default CreatePostForm;
+export default UpdatePostText;

@@ -3,7 +3,7 @@ import CustomInput from 'components/UI/CustomInput';
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router';
-import { fetchAuthorizationUser } from 'store/async-actions/authorization';
+import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 import { AuthorizationSlice } from 'store/slices/authorization-slice';
 import { IAuthUser } from '../registration-page/RegistrationPage';

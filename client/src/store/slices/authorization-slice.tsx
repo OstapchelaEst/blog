@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchAuthorizationUser } from 'store/async-actions/authorization';
-import { fetchLogout } from 'store/async-actions/logout';
-import { fetchCreateUser } from 'store/async-actions/registration';
-import { IState, IUserData } from './interfaces';
+import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
+import { fetchLogout } from 'store/async-actions/authorization/logout';
+import { fetchCreateUser } from 'store/async-actions/authorization/registration';
+import { IInitialStateAuthorization, IUserData } from './iterfaces/AuthorizationSliceInterfaces';
 
-const initialState: IState = {
-  userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('data')!) : null,
+const initialState: IInitialStateAuthorization = {
+  userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')!) : null,
   isAuth: localStorage.getItem('token') ? true : false,
   responseErrors: '',
 };
@@ -28,39 +28,37 @@ export const AuthorizationSlice = createSlice({
 
   extraReducers(builder) {
     builder.addCase(fetchCreateUser.fulfilled, (state, action) => {
-      console.log('FULLFILED WITH VALUE', action.payload);
       state.userData = action.payload;
       state.isAuth = true;
       saveToken(action.payload);
       saveUser(action.payload);
     });
     builder.addCase(fetchCreateUser.rejected, (state, action) => {
-      console.log('REJECTED WITH VALUE', action.payload);
       state.responseErrors = action.payload!.message;
     });
 
     builder.addCase(fetchAuthorizationUser.fulfilled, (state, action) => {
-      console.log('FULFILLED WITH VALUE', action.payload);
       state.userData = action.payload;
       state.isAuth = true;
       saveUser(action.payload);
       saveToken(action.payload);
     });
     builder.addCase(fetchAuthorizationUser.rejected, (state, action) => {
-      console.log('REJECTED WITH VALUE', action.payload);
       state.responseErrors = action.payload!.message;
     });
 
     builder.addCase(fetchLogout.fulfilled, (state) => {
-      console.log('SECCESS LOGOUT');
       state.isAuth = false;
       state.userData = null;
       localStorage.removeItem('token');
       localStorage.removeItem('userData');
     });
 
-    builder.addCase(fetchLogout.rejected, () => {
-      console.log('INVALID LOGOUT');
+    builder.addCase(fetchLogout.rejected, (state, action) => {
+      state.isAuth = false;
+      state.userData = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('userData');
     });
   },
 });

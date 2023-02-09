@@ -5,6 +5,7 @@ import { Control, Controller, FieldValues } from 'react-hook-form';
 type ICustomComponent = {
   name: string;
   control: Control<FieldValues>;
+  oldValue?: string;
   rules?: {
     required?: true | false;
     validate?: {
@@ -13,14 +14,17 @@ type ICustomComponent = {
   };
 } & TextFieldProps;
 
-const CustomInput = ({ name, control, rules, ...otherProps }: ICustomComponent) => {
+const CustomInput = ({ name, control, rules, oldValue, ...otherProps }: ICustomComponent) => {
   return (
     <div>
       <Controller
         name={name}
         control={control}
         rules={rules}
-        render={({ field: { onChange, onBlur, value }, fieldState: { error, isTouched } }) => (
+        render={({
+          field: { onChange, onBlur, value = oldValue ? oldValue : '' },
+          fieldState: { error, isTouched },
+        }) => (
           <TextField
             onChange={onChange}
             onBlur={onBlur}

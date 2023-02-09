@@ -3,11 +3,10 @@ import CustomInput from 'components/UI/CustomInput';
 import React, { useEffect } from 'react';
 import { useForm, FieldValues } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router';
-import { fetchCreateUser } from 'store/async-actions/registration';
+import { fetchCreateUser } from 'store/async-actions/authorization/registration';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
-
 import { AuthorizationSlice } from 'store/slices/authorization-slice';
-import { IResponseError } from 'store/slices/interfaces';
+import { IResponseError } from 'store/slices/iterfaces/AuthorizationSliceInterfaces';
 
 const validationFirstPassord = (firstPassword: string): true | string => {
   return firstPassword.length > 5 ? true : 'Миниму 6 символа';

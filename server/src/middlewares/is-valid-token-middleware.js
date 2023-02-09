@@ -1,4 +1,4 @@
-import { APIerror, sendError } from "../exceptions/send-errors.js";
+import { APIerror } from "../exceptions/send-errors.js";
 import jwt from "jsonwebtoken";
 import { SECRET_ACCESS_TOKEN_KEY } from "../services/token-services.js";
 

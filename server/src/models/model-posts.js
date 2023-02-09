@@ -4,6 +4,8 @@ const Posts = mongoose.Schema({
   text: { type: String, required: true },
   authorID: { type: String, required: true },
   datePublish: { type: String, required: true },
+  whoLikes: { type: Array },
+  whoIgnore: { type: Array },
 });
 
 export default mongoose.model("Posts", Posts);

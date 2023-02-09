@@ -1,4 +1,5 @@
 import Router from "express";
+import { body } from "express-validator";
 import authController from "../controller/auth-controller.js";
 import postsController from "../controller/posts-controller.js";
 import { isVladToken } from "../middlewares/is-valid-token-middleware.js";
@@ -22,6 +23,8 @@ router.post(
   authController.authorizacion
 );
 router.get("/all-users", isVladToken, authController.getAllUsers);
+router.delete("/logout", isVladToken, authController.logout);
+router.post("/refresh", isVladToken, authController.refresh);
 
 router.get("/all-posts", isVladToken, postsController.getAllPosts);
 router.post(
@@ -42,7 +45,29 @@ router.delete(
   isVladToken,
   postsController.deletePost
 );
-router.delete("/logout", isVladToken, authController.logout);
-router.post("/refresh", isVladToken, authController.refresh);
+router.put(
+  "/ignore-this-post",
+  body("id", "Invalid post id").isMongoId(),
+  body("idUser", "Invalid user id").isMongoId(),
+  isVladToken,
+  postsController.ingnoreThisPost
+);
+router.put(
+  "/like-post",
+  body("id", "Invalid post id").isMongoId(),
+  body("idUser", "Invalid user id").isMongoId(),
+  isVladToken,
+  postsController.likePost
+);
+router.put(
+  "/update-post-text",
+  body("id", "Invalid post id").isMongoId(),
+  body("newText", "Invalid text length. Min: 1 , max: 140").isLength({
+    min: 1,
+    max: 140,
+  }),
+  isVladToken,
+  postsController.updateTextPost
+);
 
 export default router;

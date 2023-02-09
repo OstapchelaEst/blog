@@ -10,7 +10,7 @@ export interface IResponseError {
   errors: Array<{ string: string }>;
 }
 
-export interface IState {
+export interface IInitialStateAuthorization {
   userData: IUserData | null;
   responseErrors: string;
   isAuth: boolean;

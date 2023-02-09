@@ -8,6 +8,9 @@ class MongooseServices {
   async findAndDeleteByID(model, id) {
     return await model.findByIdAndDelete(id);
   }
+  async findByID(model, id) {
+    return await model.findById(id);
+  }
   async findAll(model, value = {}) {
     return await model.find(value);
   }
