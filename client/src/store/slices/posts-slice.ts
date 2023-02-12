@@ -5,9 +5,9 @@ import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { fetchIgnorePost } from 'store/async-actions/posts/ignorePost';
 import { fetchUpdatePostText } from 'store/async-actions/posts/updatePostText';
 import { IInitialStatePostst } from './interfaces/PostsSliceInterfaces';
-
 const initialState: IInitialStatePostst = {
   posts: [],
+  allPostsCount: 0,
 };
 
 export const postsSlice = createSlice({
@@ -16,7 +16,8 @@ export const postsSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder.addCase(fetchGetPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.posts = [...state.posts, ...action.payload.posts];
+      state.allPostsCount = action.payload.length;
     });
     builder.addCase(fetchGetPosts.rejected, (state, action) => {});
 

@@ -9,4 +9,5 @@ export interface IPost {
 }
 export interface IInitialStatePostst {
   posts: IPost[];
+  allPostsCount: number;
 }
