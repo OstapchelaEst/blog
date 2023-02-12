@@ -6,11 +6,16 @@ import mongooseServices from "../services/mongoose-services.js";
 class PostsController {
   async getAllPosts(req, res, next) {
     try {
-      const allPosts = await mongooseServices.findAll(modelPosts);
-      const sortPosts = allPosts.sort((a, b) => {
-        return b.datePublish - a.datePublish;
-      });
-      res.status(200).json(sortPosts);
+      const errors = validationResult(req);
+      checkErrors(errors);
+      const countSkip = req.body.countSkip * 10;
+      const allPosts = await modelPosts
+        .find()
+        .sort({ datePublish: -1 })
+        .skip(countSkip)
+        .limit(10);
+      const allPostsCount = await modelPosts.find().count();
+      res.status(200).json({ posts: allPosts, length: allPostsCount });
     } catch (error) {
       next(error);
     }

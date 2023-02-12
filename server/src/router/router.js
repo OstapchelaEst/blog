@@ -26,7 +26,12 @@ router.get("/all-users", isVladToken, authController.getAllUsers);
 router.delete("/logout", isVladToken, authController.logout);
 router.post("/refresh", isVladToken, authController.refresh);
 
-router.get("/all-posts", isVladToken, postsController.getAllPosts);
+router.post(
+  "/all-posts",
+  body("countSkip", "Тут пусто").notEmpty(),
+  isVladToken,
+  postsController.getAllPosts
+);
 router.post(
   "/all-user-posts",
   getAllUserPostsValidation,
