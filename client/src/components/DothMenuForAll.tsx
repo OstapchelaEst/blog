@@ -1,14 +1,21 @@
 import { MenuItem } from '@mui/material';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { fetchIgnorePost } from 'store/async-actions/posts/ignorePost';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 
-const DothMenuForAll = ({ idPost, handleClose }: { idPost: string; handleClose: () => void }) => {
+interface IDothMenuForAll {
+  idPost: string;
+  handleClose: () => void;
+}
+
+const DothMenuForAll = ({ idPost, handleClose }: IDothMenuForAll) => {
   const { userData } = useAppSelector((state) => state.AuthorizationSlice);
   const dispatch = useAppDispatch();
-  const setIgnorePost = () => {
+
+  const setIgnorePost = useCallback(() => {
     dispatch(fetchIgnorePost({ id: idPost, idUser: userData!.userId }));
-  };
+  }, [dispatch, idPost, userData]);
+
   return (
     <>
       <MenuItem

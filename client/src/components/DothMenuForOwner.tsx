@@ -1,8 +1,14 @@
 import React from 'react';
 import DeletePost from './DeletePost';
 import TransitionsModal from './ModalWindow';
-import UpdatePostText from './updatePostText';
-const DothMenuForOwner = ({ idPost, text }: { idPost: string; text: string }) => {
+import UpdatePostText from './UpdatePostText';
+
+interface IDothMenuForOwner {
+  idPost: string;
+  text: string;
+}
+
+const DothMenuForOwner = ({ idPost, text }: IDothMenuForOwner) => {
   return (
     <div>
       <TransitionsModal buttonText={'Delete post'} stylesButton={{ ml: 1 }}>

@@ -21,15 +21,13 @@ const style = {
   p: 4,
 };
 
-export default function TransitionsModal({
-  children,
-  buttonText,
-  stylesButton,
-}: {
+interface IModalWindow {
   children: JSX.Element;
   buttonText: string;
   stylesButton?: SxProps<Theme>;
-}) {
+}
+
+export default function TransitionsModal({ children, buttonText, stylesButton }: IModalWindow) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);

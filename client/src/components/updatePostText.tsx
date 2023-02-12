@@ -1,4 +1,5 @@
 import { Button } from '@mui/material';
+import { validationLengthPost } from 'helpers/validation-functions';
 import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { fetchUpdatePostText } from 'store/async-actions/posts/updatePostText';
@@ -6,19 +7,13 @@ import { fetchUpdatePostText } from 'store/async-actions/posts/updatePostText';
 import { useAppDispatch } from 'store/custom-hooks/custom-hooks';
 import CustomInput from './UI/CustomInput';
 
-const validationLengthPost = (str: string): string | true => {
-  return str.length > 140 ? 'Maximum length 140 symbols' : true;
-};
-
-const UpdatePostText = ({
-  closeModal,
-  idPost,
-  text,
-}: {
+interface IUpdatePostText {
   closeModal?: () => void;
   idPost: string;
   text: string;
-}) => {
+}
+
+const UpdatePostText = ({ closeModal, idPost, text }: IUpdatePostText) => {
   const { control, handleSubmit } = useForm({ mode: 'onChange' });
   const dispatch = useAppDispatch();
 

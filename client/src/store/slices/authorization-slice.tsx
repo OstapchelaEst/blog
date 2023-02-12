@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
 import { fetchLogout } from 'store/async-actions/authorization/logout';
 import { fetchCreateUser } from 'store/async-actions/authorization/registration';
-import { IInitialStateAuthorization, IUserData } from './iterfaces/AuthorizationSliceInterfaces';
+import { IInitialStateAuthorization, IUserData } from './interfaces/AuthorizationSliceInterfaces';
 
 const initialState: IInitialStateAuthorization = {
   userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')!) : null,
@@ -33,6 +33,7 @@ export const AuthorizationSlice = createSlice({
       saveToken(action.payload);
       saveUser(action.payload);
     });
+
     builder.addCase(fetchCreateUser.rejected, (state, action) => {
       state.responseErrors = action.payload!.message;
     });

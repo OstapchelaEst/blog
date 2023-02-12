@@ -2,7 +2,13 @@ import { Typography, Box, Button } from '@mui/material';
 import React from 'react';
 import { fetchDeletePost } from 'store/async-actions/posts/deletePost';
 import { useAppDispatch } from 'store/custom-hooks/custom-hooks';
-const DeletePost = ({ idPost, handleClose }: { idPost: string; handleClose?: () => void }) => {
+
+interface IDeletePost {
+  idPost: string;
+  handleClose?: () => void;
+}
+
+const DeletePost = ({ idPost, handleClose }: IDeletePost) => {
   const dispatch = useAppDispatch();
   return (
     <>

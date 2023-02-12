@@ -4,7 +4,7 @@ import { fetchDeletePost } from 'store/async-actions/posts/deletePost';
 import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { fetchIgnorePost } from 'store/async-actions/posts/ignorePost';
 import { fetchUpdatePostText } from 'store/async-actions/posts/updatePostText';
-import { IInitialStatePostst } from './iterfaces/PostsSliceInterfaces';
+import { IInitialStatePostst } from './interfaces/PostsSliceInterfaces';
 
 const initialState: IInitialStatePostst = {
   posts: [],

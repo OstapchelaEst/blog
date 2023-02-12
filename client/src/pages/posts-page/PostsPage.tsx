@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Navigate } from 'react-router';
 import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+
 const PostsPage = () => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector((state) => state.PostsSlice);

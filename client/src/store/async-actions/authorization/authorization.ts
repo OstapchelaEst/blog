@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { BASIC_URL } from 'constants/constants';
 import { IAuthUser } from 'pages/registration-page/RegistrationPage';
-import { IUserData, IResponseError } from 'store/slices/iterfaces/AuthorizationSliceInterfaces';
+import { IUserData, IResponseError } from 'store/slices/interfaces/AuthorizationSliceInterfaces';
 
 export const fetchAuthorizationUser = createAsyncThunk<
   IUserData,
