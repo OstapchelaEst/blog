@@ -1,3 +1,4 @@
+import Loding from 'components/UI/isLoadingOverlay';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
@@ -12,6 +13,7 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <App />
+      <Loding />
     </BrowserRouter>
   </Provider>
 );

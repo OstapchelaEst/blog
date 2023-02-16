@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 import { fetchCreateUser } from 'store/async-actions/authorization/registration';
 import { useAppDispatch } from 'store/custom-hooks/custom-hooks';
 import { AuthorizationSlice } from 'store/slices/authorization-slice';
-import { IResponseError } from 'store/slices/interfaces/AuthorizationSliceInterfaces';
+import { IResponseError } from 'store/slices/interfaces/authorization-slice-interfaces';
 import CustomInput from './UI/CustomInput';
 
 const RegistrationForm = () => {

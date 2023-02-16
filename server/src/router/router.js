@@ -1,8 +1,16 @@
 import Router from "express";
 import { body } from "express-validator";
 import authController from "../controller/auth-controller.js";
+import commentsController from "../controller/comments-controller.js";
 import postsController from "../controller/posts-controller.js";
 import { isVladToken } from "../middlewares/is-valid-token-middleware.js";
+import {
+  ValidationCreateComment,
+  ValidationGetComments,
+  ValidationLikes,
+  ValidationChangeCommentText,
+  ValidationDeleteComments,
+} from "../validation/validation-comment.js";
 import { createPostValidation } from "../validation/validation-create-post.js";
 import { getAllUserPostsValidation } from "../validation/validation-get-all-user-posts.js";
 import {
@@ -73,6 +81,41 @@ router.put(
   }),
   isVladToken,
   postsController.updateTextPost
+);
+
+router.post(
+  "/create-comment",
+  isVladToken,
+  ValidationCreateComment,
+  commentsController.createComment
+);
+
+router.get(
+  "/get-comments",
+  isVladToken,
+  ValidationGetComments,
+  commentsController.getCommentsToPost
+);
+
+router.post(
+  "/like-comment",
+  isVladToken,
+  ValidationLikes,
+  commentsController.likePost
+);
+
+router.put(
+  "/change-comment",
+  isVladToken,
+  ValidationChangeCommentText,
+  commentsController.changeTextComment
+);
+
+router.delete(
+  "/delete-comment",
+  isVladToken,
+  ValidationDeleteComments,
+  commentsController.deleteComment
 );
 
 export default router;

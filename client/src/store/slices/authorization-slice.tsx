@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
 import { fetchLogout } from 'store/async-actions/authorization/logout';
 import { fetchCreateUser } from 'store/async-actions/authorization/registration';
-import { IInitialStateAuthorization, IUserData } from './interfaces/AuthorizationSliceInterfaces';
+import { IInitialStateAuthorization, IUserData } from './interfaces/authorization-slice-interfaces';
 
 const initialState: IInitialStateAuthorization = {
   userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')!) : null,

@@ -14,7 +14,7 @@ class PostsController {
         .sort({ datePublish: -1 })
         .skip(countSkip)
         .limit(10);
-      const allPostsCount = await modelPosts.find().count();
+      const allPostsCount = await modelPosts.count();
       res.status(200).json({ posts: allPosts, length: allPostsCount });
     } catch (error) {
       next(error);
@@ -49,10 +49,12 @@ class PostsController {
 
   async deletePost(req, res, next) {
     try {
+      const errors = validationResult(req);
+      checkErrors(errors);
       const postID = req.body.id;
       const isExistPost = await mongooseServices.findByID(modelPosts, postID);
       if (!isExistPost) {
-        throw APIerror.BadRequest("Поста с таким ID не существует", []);
+        throw APIerror.BadRequest("Nothing found for this id", []);
       }
       const deletedPost = await mongooseServices.findAndDeleteByID(
         modelPosts,
@@ -71,7 +73,7 @@ class PostsController {
       const { id, idUser } = req.body;
       const post = await mongooseServices.findByID(modelPosts, id);
       if (!post) {
-        throw APIerror.BadRequest("Nothing found for this id");
+        throw APIerror.BadRequest("Nothing found for this id", []);
       }
       post.whoIgnore.push(idUser);
       await post.save();
@@ -115,11 +117,9 @@ class PostsController {
       } else {
         post.whoLikes.push(idUser);
       }
-      console.log(post);
       await post.save();
       res.status(200).json(post);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

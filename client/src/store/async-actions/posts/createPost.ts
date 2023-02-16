@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
 import { RootState } from 'store/types/types';
 import $api from '../../../http/index';
 
@@ -15,7 +16,7 @@ interface IProps {
 }
 
 export const fetchCreatePost = createAsyncThunk<
-  INewPost,
+  IPost,
   IProps,
   {
     rejectValue: string;

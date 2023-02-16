@@ -4,17 +4,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router';
 import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+import { loadingSlice } from 'store/slices/loading-slice';
 
 const PostsPage = () => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector((state) => state.PostsSlice);
   const { isAuth, userData } = useAppSelector((state) => state.AuthorizationSlice);
   const { allPostsCount } = useAppSelector((state) => state.PostsSlice);
+  const { startLoading } = loadingSlice.actions;
   const [isLoading, setIsLoading] = useState(false);
   const containerRef = useRef(null);
   const countSkip = useRef(0);
 
-  const postObserver = new IntersectionObserver((entries, observer) => {
+  const postObserver = new IntersectionObserver((entries) => {
     entries.forEach(async (elem) => {
       if (allPostsCount <= countSkip.current * 10) {
         if (containerRef.current) postObserver.unobserve(containerRef.current);
@@ -34,8 +36,9 @@ const PostsPage = () => {
   });
 
   useEffect(() => {
+    dispatch(startLoading());
     dispatch(fetchGetPosts({ countSkip: countSkip.current }));
-  }, [dispatch]);
+  }, [dispatch, startLoading]);
 
   useEffect(() => {
     if (containerRef.current) postObserver.observe(containerRef.current);

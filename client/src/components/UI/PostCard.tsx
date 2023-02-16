@@ -4,13 +4,16 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DothMenu from './DothMenu';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 import { fetchLikePost } from 'store/async-actions/posts/likePost';
+import { styled } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Comments from 'components/Comments';
 
 interface IPostCard {
   author: string;
@@ -26,18 +29,42 @@ type IRef =
   | React.RefObject<HTMLDivElement>
   | null
   | undefined;
+
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
+
+const ExpandMore = styled((props: ExpandMoreProps) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
+const getDate = (date: string) => {
+  return new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+  }).format(Number(date));
+};
+
 const PostCard = React.forwardRef(
   ({ author, date, text, idPost, authorID, whoLikes }: IPostCard, ref: IRef) => {
-    const dateCreated = new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'full',
-      timeStyle: 'short',
-    }).format(Number(date));
+    const dateCreated = getDate(date);
 
     const dispatch = useAppDispatch();
     const { userData } = useAppSelector((state) => state.AuthorizationSlice);
     const [isLike, setIsLike] = React.useState(whoLikes.includes(userData!.userId));
     const [countLikes, setCountLikes] = React.useState(whoLikes.length);
+    const [expanded, setExpanded] = React.useState(false);
 
+    const handleExpandClick = () => {
+      setExpanded(!expanded);
+    };
     const handleLike = async () => {
       try {
         const response = await dispatch(fetchLikePost({ id: idPost, idUser: userData!.userId }));
@@ -71,7 +98,16 @@ const PostCard = React.forwardRef(
             <FavoriteIcon />
           </IconButton>
           <Typography>{countLikes}</Typography>
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
         </CardActions>
+        <Comments expanded={expanded} />
       </Card>
     );
   }
