@@ -4,17 +4,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router';
 import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
 import { loadingSlice } from 'store/slices/loading-slice';
+import { postsSlice } from 'store/slices/posts-slice';
 
 const PostsPage = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector((state) => state.PostsSlice);
   const { isAuth, userData } = useAppSelector((state) => state.AuthorizationSlice);
-  const { allPostsCount } = useAppSelector((state) => state.PostsSlice);
+  const { allPostsCount, posts } = useAppSelector((state) => state.PostsSlice);
   const { startLoading } = loadingSlice.actions;
+  const { resetPostst } = postsSlice.actions;
   const [isLoading, setIsLoading] = useState(false);
   const containerRef = useRef(null);
   const countSkip = useRef(0);
+
+  useEffect(() => {
+    dispatch(startLoading());
+    dispatch(fetchGetPosts({ countSkip: countSkip.current }));
+    return () => {
+      dispatch(resetPostst());
+    };
+  }, []);
 
   const postObserver = new IntersectionObserver((entries) => {
     entries.forEach(async (elem) => {
@@ -34,11 +44,7 @@ const PostsPage = () => {
       }
     });
   });
-
-  useEffect(() => {
-    dispatch(startLoading());
-    dispatch(fetchGetPosts({ countSkip: countSkip.current }));
-  }, [dispatch, startLoading]);
+  console.log('rerender postsPage');
 
   useEffect(() => {
     if (containerRef.current) postObserver.observe(containerRef.current);
@@ -55,7 +61,7 @@ const PostsPage = () => {
         .map((post, index, arr) => {
           return (
             <PostCard
-              key={post._id + post.datePublish}
+              key={post._id}
               author={post.author}
               date={post.datePublish}
               text={post.text}

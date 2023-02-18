@@ -13,7 +13,8 @@ import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks'
 import { fetchLikePost } from 'store/async-actions/posts/likePost';
 import { styled } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Comments from 'components/Comments';
+import PostDothMenu from 'components/PostDothMenu';
+import Comments from 'components/comments/Comments';
 
 interface IPostCard {
   author: string;
@@ -72,6 +73,7 @@ const PostCard = React.forwardRef(
         setCountLikes((response.payload as string[]).length);
       } catch (error) {}
     };
+
     return (
       <Card ref={ref} sx={{ maxWidth: '70%', margin: '0 auto 30px' }}>
         <CardHeader
@@ -80,7 +82,11 @@ const PostCard = React.forwardRef(
               {author[0].toUpperCase()}
             </Avatar>
           }
-          action={<DothMenu idPost={idPost} authorID={authorID} text={text} />}
+          action={
+            <DothMenu>
+              <PostDothMenu idPost={idPost} authorID={authorID} text={text} />
+            </DothMenu>
+          }
           title={author}
           subheader={dateCreated}
         />
@@ -107,7 +113,7 @@ const PostCard = React.forwardRef(
             <ExpandMoreIcon />
           </ExpandMore>
         </CardActions>
-        <Comments expanded={expanded} />
+        <Comments expanded={expanded} postId={idPost} />
       </Card>
     );
   }

@@ -90,7 +90,7 @@ router.post(
   commentsController.createComment
 );
 
-router.get(
+router.post(
   "/get-comments",
   isVladToken,
   ValidationGetComments,

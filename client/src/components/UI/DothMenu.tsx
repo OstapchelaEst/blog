@@ -8,18 +8,9 @@ import DothMenuForAll from 'components/DothMenuForAll';
 
 const ITEM_HEIGHT = 48;
 
-export default function DothMenu({
-  idPost,
-  authorID,
-  text,
-}: {
-  idPost: string;
-  authorID: string;
-  text: string;
-}) {
+export default function DothMenu({ children }: { children: JSX.Element }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { userData } = useAppSelector((state) => state.AuthorizationSlice);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -27,6 +18,10 @@ export default function DothMenu({
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const clone = React.cloneElement(children, {
+    handleClose,
+  });
 
   return (
     <div>
@@ -55,8 +50,7 @@ export default function DothMenu({
           },
         }}
       >
-        <DothMenuForAll idPost={idPost} handleClose={handleClose} />
-        {authorID === userData!.userId && <DothMenuForOwner idPost={idPost} text={text} />}
+        {clone}
       </Menu>
     </div>
   );

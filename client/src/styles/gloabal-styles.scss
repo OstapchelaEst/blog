@@ -73,3 +73,18 @@ h6 {
 textarea {
   resize: none;
 }
+
+.custom-comment-header {
+  padding: 5px 10px;
+  display:flex;
+  gap: 10px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+
+}
+
+.custom-comment-header .MuiCardHeader-title,
+.custom-comment-header .MuiCardHeader-subheader
+{
+  font-size: 14px;
+}

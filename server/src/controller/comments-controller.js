@@ -8,10 +8,13 @@ class CommentsController {
       const errors = validationResult(req);
       checkErrors(errors);
       const datePublish = Date.now();
-      const newComment = await modelComments.create({
+      console.log(datePublish);
+      const comment = {
         ...req.body,
         datePublish,
-      });
+      };
+      console.log(comment);
+      const newComment = await modelComments.create(comment);
 
       res.status(200).json(newComment);
     } catch (error) {

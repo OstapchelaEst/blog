@@ -13,7 +13,11 @@ const initialState: IInitialStatePostst = {
 export const postsSlice = createSlice({
   name: 'Posts',
   initialState,
-  reducers: {},
+  reducers: {
+    resetPostst: (state) => {
+      state.posts = [];
+    },
+  },
   extraReducers(builder) {
     //=======================LOADING_POSTS========================================
     builder.addCase(fetchGetPosts.fulfilled, (state, action) => {

@@ -32,7 +32,7 @@ const CustomInput = ({ name, control, rules, oldValue, ...otherProps }: ICustomC
             value={value || ''}
             color={error ? 'error' : isTouched ? 'success' : 'primary'}
             focused={value ? true : false}
-            helperText={error ? (error.message ? error.message : 'Обязательное поле') : ''}
+            helperText={error ? (error.message ? error.message : 'Require field') : ''}
             error={!!error}
             {...otherProps}
           />

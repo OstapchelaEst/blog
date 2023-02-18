@@ -6,7 +6,7 @@ import $api from '../../../http/index';
 const { stopLoading } = loadingSlice.actions;
 
 export const fetchGetPosts = createAsyncThunk<
-  { posts: IPost[]; length: number },
+  { length: number; posts: IPost[] },
   { countSkip: number },
   { rejectValue: string }
 >('get-posts', async (data, { rejectWithValue, dispatch }) => {
