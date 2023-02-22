@@ -9,11 +9,13 @@ const CommentDothMenu = ({
   text,
   setCommentText,
   setComments,
+  setCountComments,
 }: {
   commentId: string;
   text: string;
   setCommentText: Dispatch<SetStateAction<string>>;
-  setComments: React.Dispatch<React.SetStateAction<IComment[]>>;
+  setComments: Dispatch<SetStateAction<IComment[]>>;
+  setCountComments: Dispatch<SetStateAction<number>>;
 }) => {
   return (
     <>
@@ -21,7 +23,11 @@ const CommentDothMenu = ({
         <ChangeCommentTextForm commentId={commentId} text={text} setCommentText={setCommentText} />
       </TransitionsModal>
       <TransitionsModal buttonText={'Delete comment'}>
-        <DeleteComment commentId={commentId} setComments={setComments} />
+        <DeleteComment
+          commentId={commentId}
+          setComments={setComments}
+          setCountComments={setCountComments}
+        />
       </TransitionsModal>
     </>
   );

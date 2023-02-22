@@ -3,6 +3,7 @@ import PostsPage from 'pages/posts-page/PostsPage';
 import UserPage from 'pages/user-page/UserPage';
 import React from 'react';
 import { Route, Routes } from 'react-router';
+import { ToastContainer } from 'react-toastify';
 import MiniDrawer from './components/UI/BaseLayout';
 import { ROUTHES } from './constants/constants';
 import MainPage from './pages/main-page/MainPage';

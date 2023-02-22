@@ -3,9 +3,10 @@ import { validationLengthPost } from 'helpers/validation-functions';
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 import { fetchCreatePost } from 'store/async-actions/posts/createPost';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
-import CustomInput from './UI/CustomInput';
+import CustomInput from '../UI/CustomInput';
 
 const CreatePostForm = ({ closeModal }: { closeModal?: () => void }) => {
   const { control, handleSubmit } = useForm({ mode: 'onChange' });
@@ -21,8 +22,12 @@ const CreatePostForm = ({ closeModal }: { closeModal?: () => void }) => {
   }, [isAuth, navigate, closeModal]);
 
   const onSubmit = async (data: FieldValues | { text: string }) => {
-    await dispatch(fetchCreatePost(data as { text: string }));
-    if (closeModal) closeModal();
+    try {
+      await dispatch(fetchCreatePost(data as { text: string })).unwrap();
+      if (closeModal) closeModal();
+    } catch (error) {
+      toast('Something went wrong');
+    }
   };
 
   return (

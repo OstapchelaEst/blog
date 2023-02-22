@@ -12,7 +12,6 @@ function PostPreloader() {
         title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
         subheader={<Skeleton animation="wave" height={10} width="40%" />}
       />
-
       <CardContent>
         <React.Fragment>
           <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />

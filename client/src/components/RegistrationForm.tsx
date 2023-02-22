@@ -1,5 +1,6 @@
 import { Button } from '@mui/material';
 import {
+  setValidationErrors,
   validationEmail,
   validationFirstPassord,
   validationSecondPassword,
@@ -28,17 +29,12 @@ const RegistrationForm = () => {
 
   const onSubmit = async (data: FieldValues | IAuthUser) => {
     const { login, email, password } = data;
-    const response = await dispatch(fetchCreateUser({ login, email, password }));
-
-    if (response.type === 'create-user/rejected') {
-      const errors = (response.payload as IResponseError).errors;
-      errors.forEach((error) => {
-        const nameFild = Object.keys(error).join('');
-        const messageError = Object.values(error).join('');
-        setError(nameFild, { type: 'custom', message: messageError });
-      });
-    } else {
+    try {
+      await dispatch(fetchCreateUser({ login, email, password })).unwrap();
       navigate('/');
+    } catch (error) {
+      const errors = (error as IResponseError).errors;
+      setValidationErrors(errors, setError);
     }
   };
 

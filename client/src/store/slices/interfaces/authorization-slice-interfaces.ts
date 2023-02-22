@@ -1,3 +1,5 @@
+import { IResponseErrors } from 'http/fetch/fetch-interfaces';
+
 export interface IUserData {
   login: string;
   email: string;
@@ -7,7 +9,7 @@ export interface IUserData {
 
 export interface IResponseError {
   message: string;
-  errors: Array<{ string: string }>;
+  errors: IResponseErrors[];
 }
 
 export interface IInitialStateAuthorization {

@@ -7,11 +7,12 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAppSelector } from 'store/custom-hooks/custom-hooks';
-import { useState } from 'react';
-import { fetchLikeComment } from 'helpers/fetch/comments-requests/likeComment';
+import { Dispatch, SetStateAction, useState } from 'react';
 import CommentDothMenu from './CommentDothMenu';
 import DothMenu from 'components/UI/DothMenu';
 import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
+import { toast } from 'react-toastify';
+import CommentsFetch from 'http/fetch/comments-fetch';
 
 interface IPostCard {
   author: string;
@@ -20,7 +21,8 @@ interface IPostCard {
   commentId: string;
   authorID: string;
   whoLikes: string[];
-  setComments: React.Dispatch<React.SetStateAction<IComment[]>>;
+  setComments: Dispatch<SetStateAction<IComment[]>>;
+  setCountComments: Dispatch<SetStateAction<number>>;
 }
 
 const getDate = (date: string) => {
@@ -30,7 +32,16 @@ const getDate = (date: string) => {
   }).format(Number(date));
 };
 
-const Comment = ({ author, date, text, commentId, authorID, whoLikes, setComments }: IPostCard) => {
+const Comment = ({
+  author,
+  date,
+  text,
+  commentId,
+  authorID,
+  whoLikes,
+  setComments,
+  setCountComments,
+}: IPostCard) => {
   const dateCreated = getDate(date);
   const { userData } = useAppSelector((state) => state.AuthorizationSlice);
   const [isLike, setIsLike] = useState(whoLikes.includes(userData!.userId));
@@ -39,11 +50,14 @@ const Comment = ({ author, date, text, commentId, authorID, whoLikes, setComment
 
   const handleLike = async () => {
     try {
-      const response = await fetchLikeComment({ commentId, userId: userData!.userId });
+      const response = (await CommentsFetch.fetchLikeComment({
+        commentId,
+        userId: userData!.userId,
+      })) as IComment;
       setIsLike(response.whoLikes.includes(userData!.userId));
       setCountLikes(response.whoLikes.length);
     } catch (error) {
-      alert('ERROR');
+      toast('Server error, sory :(');
     }
   };
   return (
@@ -58,6 +72,7 @@ const Comment = ({ author, date, text, commentId, authorID, whoLikes, setComment
                 text={commentText}
                 setCommentText={setCommentText}
                 setComments={setComments}
+                setCountComments={setCountComments}
               />
             </DothMenu>
           ) : null

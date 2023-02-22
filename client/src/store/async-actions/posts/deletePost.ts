@@ -1,13 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import $api from '../../../http/index';
+import $api from '../../../http/axios-instens';
 import { INewPost } from './createPost';
 
 export const fetchDeletePost = createAsyncThunk<INewPost, { id: string }>(
   'delete-post',
-  async (data) => {
+  async (data, { rejectWithValue }) => {
     return $api
-      .delete('/delete-post', { data })
+      .delete('/delete-post', {})
       .then((respons) => respons.data)
-      .catch((err) => console.log(err));
+      .catch((err) => rejectWithValue(err));
   }
 );

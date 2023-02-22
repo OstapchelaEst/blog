@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import $api from '../../../http/index';
+import $api from '../../../http/axios-instens';
 
-export const fetchLikePost = createAsyncThunk<string, { id: string; idUser: string }>(
+export const fetchLikePost = createAsyncThunk<string[], { id: string; idUser: string }>(
   'like-post',
-  async (ids) => {
+  async (data) => {
     return $api
-      .put('/like-post', ids)
+      .put('/like-post', data)
       .then((response) => response.data.whoLikes)
       .catch((err) => alert(err));
   }

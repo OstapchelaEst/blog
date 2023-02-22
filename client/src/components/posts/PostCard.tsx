@@ -8,13 +8,15 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import DothMenu from './DothMenu';
+import DothMenu from '../UI/DothMenu';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 import { fetchLikePost } from 'store/async-actions/posts/likePost';
 import { styled } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import PostDothMenu from 'components/PostDothMenu';
 import Comments from 'components/comments/Comments';
+import InsertCommentIcon from '@mui/icons-material/InsertComment';
+import PostDothMenu from 'components/posts/PostDothMenu';
+import { getDate } from 'helpers/helpers-functions';
+import { toast } from 'react-toastify';
 
 interface IPostCard {
   author: string;
@@ -39,19 +41,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  color: !expand ? 'greey' : '#1976d2',
   marginLeft: 'auto',
   transition: theme.transitions.create('transform', {
     duration: theme.transitions.duration.shortest,
   }),
 }));
-
-const getDate = (date: string) => {
-  return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'full',
-    timeStyle: 'short',
-  }).format(Number(date));
-};
 
 const PostCard = React.forwardRef(
   ({ author, date, text, idPost, authorID, whoLikes }: IPostCard, ref: IRef) => {
@@ -59,19 +54,25 @@ const PostCard = React.forwardRef(
 
     const dispatch = useAppDispatch();
     const { userData } = useAppSelector((state) => state.AuthorizationSlice);
-    const [isLike, setIsLike] = React.useState(whoLikes.includes(userData!.userId));
-    const [countLikes, setCountLikes] = React.useState(whoLikes.length);
+    const [isLike, setIsLike] = React.useState<boolean>(whoLikes.includes(userData!.userId));
+    const [countLikes, setCountLikes] = React.useState<number>(whoLikes.length);
+    const [countComments, setCountComments] = React.useState<number>(0);
     const [expanded, setExpanded] = React.useState(false);
 
     const handleExpandClick = () => {
       setExpanded(!expanded);
     };
+
     const handleLike = async () => {
       try {
-        const response = await dispatch(fetchLikePost({ id: idPost, idUser: userData!.userId }));
-        setIsLike((response.payload as string[]).includes(userData!.userId));
-        setCountLikes((response.payload as string[]).length);
-      } catch (error) {}
+        const response = await dispatch(
+          fetchLikePost({ id: idPost, idUser: userData!.userId })
+        ).unwrap();
+        setIsLike(response.includes(userData!.userId));
+        setCountLikes(response.length);
+      } catch (error) {
+        toast('Somthing went wrong');
+      }
     };
 
     return (
@@ -95,7 +96,7 @@ const PostCard = React.forwardRef(
             {text}
           </Typography>
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ justifyContent: 'flex-end' }}>
           <IconButton
             aria-label="add to favorites"
             sx={{ color: isLike ? 'red' : 'greey' }}
@@ -108,12 +109,14 @@ const PostCard = React.forwardRef(
             expand={expanded}
             onClick={handleExpandClick}
             aria-expanded={expanded}
-            aria-label="show more"
+            aria-label="comments"
+            sx={{ justifySelf: 'end' }}
           >
-            <ExpandMoreIcon />
+            <InsertCommentIcon />
           </ExpandMore>
+          <Typography sx={{ pr: 2 }}>{countComments}</Typography>
         </CardActions>
-        <Comments expanded={expanded} postId={idPost} />
+        <Comments expanded={expanded} postId={idPost} setCountComments={setCountComments} />
       </Card>
     );
   }

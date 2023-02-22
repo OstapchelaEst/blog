@@ -32,7 +32,8 @@ import InputBase from '@mui/material/InputBase';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 import { fetchLogout } from 'store/async-actions/authorization/logout';
 import TransitionsModal from 'components/ModalWindow';
-import CreatePostForm from 'components/CreatePostForm';
+import CreatePostForm from 'components/posts/CreatePostForm';
+import { ToastContainer } from 'react-toastify';
 
 const drawerWidth = 240;
 
@@ -204,6 +205,18 @@ export default function MiniDrawer() {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>

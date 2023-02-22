@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import $api from '../../../http/index';
+import $api from '../../../http/axios-instens';
 
 export const fetchLogout = createAsyncThunk(
   'authorization-logout',

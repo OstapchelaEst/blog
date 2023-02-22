@@ -1,37 +1,30 @@
 import { MenuItem } from '@mui/material';
-import React, { useCallback } from 'react';
+import React from 'react';
+import { toast } from 'react-toastify';
 import { fetchIgnorePost } from 'store/async-actions/posts/ignorePost';
 import { useAppSelector, useAppDispatch } from 'store/custom-hooks/custom-hooks';
 import DothMenuForOwner from './DothMenuForOwner';
 
-const PostDothMenu = ({
-  idPost,
-  handleClose,
-  authorID,
-  text,
-}: {
+interface IPostDothMenu {
   idPost: string;
   authorID: string;
   text: string;
   handleClose?: () => void;
-}) => {
-  const { userData } = useAppSelector((state) => state.AuthorizationSlice);
+}
+const PostDothMenu = ({ idPost, handleClose, authorID, text }: IPostDothMenu) => {
+  const userData = useAppSelector((state) => state.AuthorizationSlice.userData);
   const dispatch = useAppDispatch();
 
-  const setIgnorePost = useCallback(() => {
-    dispatch(fetchIgnorePost({ id: idPost, idUser: userData!.userId }));
-  }, [dispatch, idPost, userData]);
+  const setIgnorePost = async () => {
+    try {
+      await dispatch(fetchIgnorePost({ id: idPost, idUser: userData!.userId })).unwrap();
+    } catch (error) {
+      toast('Somthing went wrong...');
+    }
+  };
 
   return (
     <>
-      <MenuItem
-        key={'Ignore all this user posts'}
-        onClick={() => {
-          if (handleClose) handleClose();
-        }}
-      >
-        {'Ignore all this user posts'}
-      </MenuItem>
       <MenuItem
         key={'Ignore post'}
         onClick={() => {

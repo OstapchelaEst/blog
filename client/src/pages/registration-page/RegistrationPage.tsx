@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import RegistrationForm from 'components/RegistrationForm';
 import React from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 import { useAppSelector } from 'store/custom-hooks/custom-hooks';
 
 export interface IAuthUser {
@@ -12,9 +12,10 @@ export interface IAuthUser {
 }
 
 const RegistrationPage = () => {
-  const { isAuth } = useAppSelector((state) => state.AuthorizationSlice);
+  const isAuth = useAppSelector((state) => state.AuthorizationSlice.isAuth);
+  const navigate = useNavigate();
   if (isAuth) {
-    return <Navigate to={'/'} />;
+    navigate('/');
   }
   return (
     <Box

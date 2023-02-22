@@ -1,9 +1,12 @@
 import { Button } from '@mui/material';
-import { fetchChangeCommentText } from 'helpers/fetch/comments-requests/changeCommentText';
 import { validationLengthPost } from 'helpers/validation-functions';
 import React, { Dispatch, SetStateAction } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import CustomInput from '../UI/CustomInput';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import CommentsFetch from 'http/fetch/comments-fetch';
+import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
 
 interface IUpdatePostText {
   closeModal?: () => void;
@@ -21,9 +24,16 @@ const ChangeCommentTextForm = ({
   const { control, handleSubmit } = useForm({ mode: 'onChange' });
 
   const onSubmit = async (data: FieldValues | { newText: string }) => {
-    const response = await fetchChangeCommentText({ commentId, newText: data.newText });
-    setCommentText(response.text);
-    if (closeModal) closeModal();
+    try {
+      const response = (await CommentsFetch.fetchChangeCommentText({
+        commentId,
+        newText: data.newText,
+      })) as IComment;
+      setCommentText(response.text);
+      if (closeModal) closeModal();
+    } catch (error) {
+      toast('Server error, sory :(');
+    }
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

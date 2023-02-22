@@ -21,10 +21,11 @@ const AuthorizationPage = () => {
   const { resetResponseError } = AuthorizationSlice.actions;
 
   const onSubmit = async (data: FieldValues | Omit<IAuthUser, 'login'>) => {
-    const response = await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>));
-    if (response.type !== 'authorization-user/rejected') {
-      navigate('/');
-    }
+    await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>))
+      .unwrap()
+      .then(() => {
+        navigate('/');
+      });
   };
 
   useEffect(() => {

@@ -1,7 +1,7 @@
+import TransitionsModal from 'components/ModalWindow';
+import UpdatePostText from 'components/posts/UpdatePostText';
 import React from 'react';
 import DeletePost from './DeletePost';
-import TransitionsModal from './ModalWindow';
-import UpdatePostText from './UpdatePostText';
 
 interface IDothMenuForOwner {
   idPost: string;

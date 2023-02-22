@@ -1,11 +1,20 @@
 import { Collapse, CardContent, Typography, Button } from '@mui/material';
-import { fetchGetcCommentsToPost } from 'helpers/fetch/comments-requests/getCommentsToPost';
-import React, { useEffect, useState } from 'react';
+import CommentsFetch from 'http/fetch/comments-fetch';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
 import Comment from './Comment';
 import CreateCommentForm from './CreateCommentForm';
 
-const Comments = ({ expanded, postId }: { expanded: boolean | undefined; postId: string }) => {
+const Comments = ({
+  expanded,
+  postId,
+  setCountComments,
+}: {
+  expanded: boolean | undefined;
+  postId: string;
+  setCountComments: Dispatch<SetStateAction<number>>;
+}) => {
   const [comments, setComments] = useState<IComment[]>([]);
   const [howCommentsShow, setHowCommentsShow] = useState<number>(3);
 
@@ -15,8 +24,13 @@ const Comments = ({ expanded, postId }: { expanded: boolean | undefined; postId:
 
   useEffect(() => {
     const getComments = async () => {
-      const commenst = await fetchGetcCommentsToPost(postId);
-      setComments(commenst as IComment[]);
+      try {
+        const commenst = (await CommentsFetch.fetchGetcCommentsToPost({ postId })) as IComment[];
+        setComments(commenst);
+        setCountComments(commenst.length);
+      } catch (error) {
+        toast('Server error, sory :(');
+      }
     };
     getComments();
   }, []);
@@ -43,6 +57,7 @@ const Comments = ({ expanded, postId }: { expanded: boolean | undefined; postId:
                   authorID={comment.authorId}
                   whoLikes={comment.whoLikes}
                   setComments={setComments}
+                  setCountComments={setCountComments}
                 />
               );
             }
@@ -62,6 +77,7 @@ const Comments = ({ expanded, postId }: { expanded: boolean | undefined; postId:
           setComments={setComments}
           setHowCommentsShow={setHowCommentsShow}
           allCommentsLength={comments.length}
+          setCountComments={setCountComments}
         />
       </CardContent>
     </Collapse>

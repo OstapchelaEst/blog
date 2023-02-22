@@ -1,4 +1,5 @@
-import { FieldValues } from 'react-hook-form';
+import { IResponseErrors } from 'http/fetch/fetch-interfaces';
+import { ErrorOption, FieldValues } from 'react-hook-form';
 
 export const validationLengthPost = (str: string): string | true => {
   return str.length > 140 ? 'Maximum length 140 symbols' : true;
@@ -27,4 +28,24 @@ export const validationEmail = (email: string): true | string => {
   const EMAIL_REGEXP =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
   return EMAIL_REGEXP.test(email) ? true : 'Не валидный E-mail';
+};
+
+export const setValidationErrors = (
+  errors: IResponseErrors[],
+  setError: (
+    name: string,
+    error: ErrorOption,
+    options?:
+      | {
+          shouldFocus: boolean;
+        }
+      | undefined
+  ) => void
+): void => {
+  errors.forEach((error) => {
+    const data = Object.entries(error)[0];
+    const nameFild = data[0];
+    const messageError = data[1];
+    setError(nameFild, { type: 'custom', message: messageError });
+  });
 };

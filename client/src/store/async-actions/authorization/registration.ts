@@ -17,13 +17,13 @@ export const fetchCreateUser = createAsyncThunk<
   dispatch(startLoading());
   return axios
     .post(`${BASIC_URL}/registration`, userData)
-
     .then((res) => {
       dispatch(stopLoading());
       return res.data;
     })
     .catch((err) => {
       dispatch(stopLoading());
+      //console.log(err.response.data);
       return rejectWithValue(err.response.data);
     });
 });
