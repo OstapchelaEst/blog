@@ -23,7 +23,6 @@ export const fetchCreateUser = createAsyncThunk<
     })
     .catch((err) => {
       dispatch(stopLoading());
-      //console.log(err.response.data);
       return rejectWithValue(err.response.data);
     });
 });

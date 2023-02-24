@@ -1,15 +1,22 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import $api from '../../../http/axios-instens';
-import { INewPost } from './createPost';
+import { IResponseErrorBody } from 'http/fetch/fetch-interfaces';
+import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
+import $api from '../../../http/axios-instance';
 
-export const fetchUpdatePostText = createAsyncThunk<INewPost, { id: string; newText: string }>(
-  'update-post-text',
-  async (data, { rejectWithValue }) => {
-    return $api
-      .put('/update-post-text', data)
-      .then((respons) => {
-        return respons.data;
-      })
-      .catch((err) => rejectWithValue(err));
-  }
-);
+interface IData {
+  id: string;
+  newText: string;
+}
+
+export const fetchUpdatePostText = createAsyncThunk<
+  IPost,
+  IData,
+  { rejectValue: IResponseErrorBody }
+>('update-post-text', async (data, { rejectWithValue }) => {
+  return $api
+    .put('/update-post-text', data)
+    .then((respons) => {
+      return respons.data;
+    })
+    .catch((err) => rejectWithValue(err.response));
+});

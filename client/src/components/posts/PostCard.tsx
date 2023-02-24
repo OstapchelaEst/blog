@@ -54,7 +54,9 @@ const PostCard = React.forwardRef(
 
     const dispatch = useAppDispatch();
     const { userData } = useAppSelector((state) => state.AuthorizationSlice);
-    const [isLike, setIsLike] = React.useState<boolean>(whoLikes.includes(userData!.userId));
+    const [isLike, setIsLike] = React.useState<boolean>(
+      whoLikes.includes(userData ? userData.userId : '')
+    );
     const [countLikes, setCountLikes] = React.useState<number>(whoLikes.length);
     const [countComments, setCountComments] = React.useState<number>(0);
     const [expanded, setExpanded] = React.useState(false);

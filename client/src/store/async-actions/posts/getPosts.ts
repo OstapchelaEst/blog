@@ -1,24 +1,29 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { IResponseErrorBody } from 'http/fetch/fetch-interfaces';
 import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
-import { loadingSlice } from 'store/slices/loading-slice';
-import $api from '../../../http/axios-instens';
+import $api from '../../../http/axios-instance';
 
-const { stopLoading, startLoading } = loadingSlice.actions;
+interface IData {
+  countSkip: number;
+  userId: string;
+}
+
+interface IResponse {
+  length: number;
+  posts: IPost[];
+}
 
 export const fetchGetPosts = createAsyncThunk<
-  { length: number; posts: IPost[] },
-  { countSkip: number },
-  { rejectValue: string }
+  IResponse,
+  IData,
+  { rejectValue: IResponseErrorBody }
 >('get-posts', async (data, { rejectWithValue, dispatch }) => {
-  dispatch(startLoading());
   return $api
     .post(`/all-posts`, data)
     .then((response) => {
-      dispatch(stopLoading());
       return response.data;
     })
     .catch((err) => {
-      dispatch(stopLoading());
-      return rejectWithValue(err);
+      return rejectWithValue(err.response);
     });
 });

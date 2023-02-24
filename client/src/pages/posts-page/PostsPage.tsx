@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
+import { loadingSlice } from 'store/slices/loading-slice';
 import { postsSlice } from 'store/slices/posts-slice';
 
 const PostsPage = () => {
@@ -12,13 +13,27 @@ const PostsPage = () => {
   const { isAuth, userData } = useAppSelector((state) => state.AuthorizationSlice);
   const { allPostsCount, posts } = useAppSelector((state) => state.PostsSlice);
   const { resetPostst } = postsSlice.actions;
+  const { stopLoading, startLoading } = loadingSlice.actions;
   const [isLoading, setIsLoading] = useState(false);
   const containerRef = useRef(null);
   const countSkip = useRef(0);
   const navigate = useNavigate();
 
+  const getPosts = async () => {
+    try {
+      dispatch(startLoading());
+      await dispatch(
+        fetchGetPosts({ countSkip: countSkip.current, userId: userData!.userId })
+      ).unwrap();
+      dispatch(stopLoading());
+    } catch (error) {
+      dispatch(stopLoading());
+      toast('Something went wrong');
+    }
+  };
+
   useEffect(() => {
-    dispatch(fetchGetPosts({ countSkip: countSkip.current }));
+    getPosts();
     return () => {
       dispatch(resetPostst());
     };
@@ -27,7 +42,7 @@ const PostsPage = () => {
   const postObserver = useMemo(() => {
     return new IntersectionObserver((entries) => {
       entries.forEach(async (elem) => {
-        if (allPostsCount <= countSkip.current * 10) {
+        if (allPostsCount <= countSkip.current * 10 + 10) {
           if (containerRef.current) postObserver.unobserve(containerRef.current);
           return;
         }
@@ -35,7 +50,7 @@ const PostsPage = () => {
           if (containerRef.current) postObserver.unobserve(containerRef.current);
           setIsLoading(true);
           countSkip.current += 1;
-          dispatch(fetchGetPosts({ countSkip: countSkip.current }))
+          dispatch(fetchGetPosts({ countSkip: countSkip.current, userId: userData!.userId }))
             .unwrap()
             .then(() => {
               setIsLoading(false);
@@ -61,22 +76,20 @@ const PostsPage = () => {
 
   return (
     <div>
-      {posts
-        .filter((post) => !post.whoIgnore.includes(userData!.userId))
-        .map((post, index, arr) => {
-          return (
-            <PostCard
-              key={post._id}
-              author={post.author}
-              date={post.datePublish}
-              text={post.text}
-              idPost={post._id}
-              whoLikes={post.whoLikes}
-              authorID={post.authorID}
-              ref={index === arr.length - 1 ? containerRef : null}
-            />
-          );
-        })}
+      {posts.map((post, index, arr) => {
+        return (
+          <PostCard
+            key={post._id}
+            author={post.author}
+            date={post.datePublish}
+            text={post.text}
+            idPost={post._id}
+            whoLikes={post.whoLikes}
+            authorID={post.authorID}
+            ref={index === arr.length - 1 ? containerRef : null}
+          />
+        );
+      })}
       {isLoading && <PostPreloader />}
     </div>
   );

@@ -55,7 +55,7 @@ export const AuthorizationSlice = createSlice({
       localStorage.removeItem('userData');
     });
 
-    builder.addCase(fetchLogout.rejected, (state, action) => {
+    builder.addCase(fetchLogout.rejected, (state) => {
       state.isAuth = false;
       state.userData = null;
       localStorage.removeItem('token');

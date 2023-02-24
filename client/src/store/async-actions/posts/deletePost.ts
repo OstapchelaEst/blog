@@ -1,13 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import $api from '../../../http/axios-instens';
-import { INewPost } from './createPost';
+import { IResponseErrorBody } from 'http/fetch/fetch-interfaces';
+import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
+import $api from '../../../http/axios-instance';
 
-export const fetchDeletePost = createAsyncThunk<INewPost, { id: string }>(
+interface IData {
+  id: string;
+}
+
+export const fetchDeletePost = createAsyncThunk<IPost, IData, { rejectValue: IResponseErrorBody }>(
   'delete-post',
   async (data, { rejectWithValue }) => {
     return $api
-      .delete('/delete-post', {})
+      .delete('/delete-post', { data })
       .then((respons) => respons.data)
-      .catch((err) => rejectWithValue(err));
+      .catch((err) => rejectWithValue(err.response));
   }
 );

@@ -1,4 +1,4 @@
-import $api from 'http/axios-instens';
+import $api from 'http/axios-instance';
 import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
 import { IResponseErrorBody } from './fetch-interfaces';
 

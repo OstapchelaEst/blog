@@ -1,30 +1,23 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { IResponseErrorBody } from 'http/fetch/fetch-interfaces';
 import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
 import { RootState } from 'store/types/types';
-import $api from '../../../http/axios-instens';
+import $api from '../../../http/axios-instance';
 
-export interface INewPost {
-  author: string;
-  text: string;
-  authorID: string;
-  _id: string;
-  datePublish: string;
-}
-
-interface IProps {
+interface IData {
   text: string;
 }
 
 export const fetchCreatePost = createAsyncThunk<
   IPost,
-  IProps,
+  IData,
   {
-    rejectValue: string;
+    rejectValue: IResponseErrorBody;
     state: RootState;
   }
 >('create-post', async (data, { rejectWithValue, getState }) => {
   const state = getState();
-  const newPost: Omit<INewPost, '_id' | 'datePublish'> = {
+  const newPost = {
     text: data.text,
     author: state.AuthorizationSlice.userData!.login,
     authorID: state.AuthorizationSlice.userData!.userId,
@@ -34,5 +27,5 @@ export const fetchCreatePost = createAsyncThunk<
     .then((response) => {
       return response.data;
     })
-    .catch((err) => rejectWithValue(err));
+    .catch((err) => rejectWithValue(err.response));
 });
