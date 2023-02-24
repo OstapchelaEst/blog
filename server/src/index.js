@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import router from "./router/router.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { isVladToken } from "./middlewares/is-valid-token-middleware.js";
+import { isValidToken } from "./middlewares/is-valid-token-middleware.js";
 import { errorMiddleware } from "./middlewares/error-handler-middleware.js";
 const PORT = 5000;
 const DB_URL = `mongodb+srv://admin:admin_app@cluster0.etgahy6.mongodb.net/?retryWrites=true&w=majority`;
@@ -20,7 +20,7 @@ app.use(
   })
 );
 app.use("", router);
-app.use(isVladToken);
+app.use(isValidToken);
 app.use(errorMiddleware);
 mongoose.set("strictQuery", false);
 

@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import authController from "../controller/auth-controller.js";
 import commentsController from "../controller/comments-controller.js";
 import postsController from "../controller/posts-controller.js";
-import { isVladToken } from "../middlewares/is-valid-token-middleware.js";
+import { isValidToken } from "../middlewares/is-valid-token-middleware.js";
 import {
   ValidationCreateComment,
   ValidationGetComments,
@@ -30,46 +30,47 @@ router.post(
   authorizationValidation,
   authController.authorizacion
 );
-router.get("/all-users", isVladToken, authController.getAllUsers);
-router.delete("/logout", isVladToken, authController.logout);
-router.post("/refresh", isVladToken, authController.refresh);
+router.get("/all-users", isValidToken, authController.getAllUsers);
+router.delete("/logout", isValidToken, authController.logout);
+router.post("/refresh", isValidToken, authController.refresh);
 
 router.post(
   "/all-posts",
   body("countSkip", "Тут пусто").notEmpty(),
-  isVladToken,
+  body("userId", "Invalid userId").isMongoId(),
+  isValidToken,
   postsController.getAllPosts
 );
 router.post(
   "/all-user-posts",
   getAllUserPostsValidation,
-  isVladToken,
+  isValidToken,
   postsController.getAllUserPosts
 );
 router.post(
   "/create-post",
   createPostValidation,
-  isVladToken,
+  isValidToken,
   postsController.createPost
 );
 router.delete(
   "/delete-post",
   getAllUserPostsValidation,
-  isVladToken,
+  isValidToken,
   postsController.deletePost
 );
 router.put(
   "/ignore-this-post",
   body("id", "Invalid post id").isMongoId(),
   body("idUser", "Invalid user id").isMongoId(),
-  isVladToken,
+  isValidToken,
   postsController.ingnoreThisPost
 );
 router.put(
   "/like-post",
   body("id", "Invalid post id").isMongoId(),
   body("idUser", "Invalid user id").isMongoId(),
-  isVladToken,
+  isValidToken,
   postsController.likePost
 );
 router.put(
@@ -79,41 +80,41 @@ router.put(
     min: 1,
     max: 140,
   }),
-  isVladToken,
+  isValidToken,
   postsController.updateTextPost
 );
 
 router.post(
   "/create-comment",
-  isVladToken,
+  isValidToken,
   ValidationCreateComment,
   commentsController.createComment
 );
 
 router.post(
   "/get-comments",
-  isVladToken,
+  isValidToken,
   ValidationGetComments,
   commentsController.getCommentsToPost
 );
 
 router.post(
   "/like-comment",
-  isVladToken,
+  isValidToken,
   ValidationLikes,
   commentsController.likePost
 );
 
 router.put(
   "/change-comment",
-  isVladToken,
+  isValidToken,
   ValidationChangeCommentText,
   commentsController.changeTextComment
 );
 
 router.delete(
   "/delete-comment",
-  isVladToken,
+  isValidToken,
   ValidationDeleteComments,
   commentsController.deleteComment
 );

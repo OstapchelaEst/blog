@@ -2,7 +2,7 @@ import { APIerror } from "../exceptions/send-errors.js";
 import jwt from "jsonwebtoken";
 import { SECRET_ACCESS_TOKEN_KEY } from "../services/token-services.js";
 
-export const isVladToken = (req, res, next) => {
+export const isValidToken = (req, res, next) => {
   try {
     const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
     if (token) {

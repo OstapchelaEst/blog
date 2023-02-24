@@ -3,14 +3,16 @@ import modelPosts from "../models/model-posts.js";
 import { validationResult } from "express-validator";
 import { checkErrors } from "../validation/check-errors-array.js";
 import mongooseServices from "../services/mongoose-services.js";
+
 class PostsController {
   async getAllPosts(req, res, next) {
     try {
       const errors = validationResult(req);
       checkErrors(errors);
       const countSkip = req.body.countSkip * 10;
+      const userId = req.body.userId;
       const allPosts = await modelPosts
-        .find()
+        .find({ whoIgnore: { $ne: userId } })
         .sort({ datePublish: -1 })
         .skip(countSkip)
         .limit(10);
@@ -27,10 +29,8 @@ class PostsController {
       checkErrors(errors);
       const datePublish = Date.now();
       const newPost = await modelPosts.create({ ...req.body, datePublish });
-
       res.status(200).json(newPost);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
