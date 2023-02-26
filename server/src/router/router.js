@@ -32,7 +32,7 @@ router.post(
 );
 router.get("/all-users", isValidToken, authController.getAllUsers);
 router.delete("/logout", isValidToken, authController.logout);
-router.post("/refresh", isValidToken, authController.refresh);
+router.post("/refresh", authController.refresh);
 
 router.post(
   "/all-posts",

@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { checkErrors } from "../validation/check-errors-array.js";
 import tokenServices from "../services/token-services.js";
 import { APIerror } from "../exceptions/send-errors.js";
+import modelToken from "../models/model-token.js";
 
 class AuthController {
   static async getHashPassword(password) {
@@ -106,12 +107,13 @@ class AuthController {
         email,
         userId: String(_id),
       });
+
       await tokenServices.saveToken(_id, refreshToken);
+
       res.header("Access-Control-Allow-Credentials", true);
-      res.cookie("refreshToken", refreshToken, {
+      await res.cookie("refreshToken", refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        expires: new Date(Date.now() + 900000),
       });
       res.status(200).json({ login, email, userId: _id, accessToken });
     } catch (error) {
@@ -122,7 +124,6 @@ class AuthController {
   async logout(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
-      console.log(refreshToken);
       const token = await tokenServices.removeToken(refreshToken);
       console.log(token);
       res.clearCookie("refreshToken");
@@ -134,21 +135,29 @@ class AuthController {
 
   async refresh(req, res, next) {
     try {
-      const oldToken = req.headers.authorization.split(" ")[1];
-      console.log(oldToken);
-      const { login, email, userId } = jwt.decode(oldToken);
-
-      const { accessToken, refreshToken } = tokenServices.generateTokens({
+      const { refreshToken } = req.cookies;
+      const userData = tokenServices.validateRefreshToken(refreshToken);
+      const tokenFromDb = await modelToken.find({ refreshToken });
+      if (!userData || !tokenFromDb) {
+        throw APIerror.UnauthorizedError();
+      }
+      const { login, email, userId } = userData;
+      const tokens = tokenServices.generateTokens({
         login,
         email,
         userId,
       });
-      res.cookie("refreshToken", refreshToken, {
+
+      res.cookie("refreshToken", tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
 
-      res.status(200).json({ login, email, userId, accessToken });
+      await tokenServices.saveToken(userData.userId, refreshToken);
+
+      res
+        .status(200)
+        .json({ login, email, userId, accessToken: tokens.accessToken });
     } catch (error) {
       next(error);
     }

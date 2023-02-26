@@ -21,6 +21,24 @@ class TokenServices {
     };
   }
 
+  validateAccessToken(token) {
+    try {
+      const userData = jwt.verify(token, SECRET_ACCESS_TOKEN_KEY);
+      return userData;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  validateRefreshToken(token) {
+    try {
+      const userData = jwt.verify(token, SECRET_REFRESH_TOKEN_KEY);
+      return userData;
+    } catch (error) {
+      return null;
+    }
+  }
+
   async saveToken(userId, refreshToken) {
     const tokenData = await mongooseServices.findBy("user", userId, TokenModel);
     if (tokenData) {
@@ -51,8 +69,6 @@ class TokenServices {
     );
     return tokenData;
   }
-
-  
 }
 
 export default new TokenServices();
