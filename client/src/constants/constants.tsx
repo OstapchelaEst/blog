@@ -6,6 +6,7 @@ export const ROUTHES = {
   ERROR_PAGE: '/error',
   LOGOUT: '/logout',
   POSTS: '/posts',
+  USERS: '/users',
 };
 
 export const BASIC_URL = 'http://localhost:5000';

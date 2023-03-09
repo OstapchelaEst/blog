@@ -1,5 +1,4 @@
 import MongooseServices from "../services/mongoose-services.js";
-import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import modelRegistration from "../models/model-registration.js";
 import bcrypt from "bcrypt";

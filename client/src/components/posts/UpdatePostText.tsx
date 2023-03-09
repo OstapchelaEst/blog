@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { validationLengthPost } from 'helpers/validation-functions';
-import React from 'react';
+import React, { memo } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { fetchUpdatePostText } from 'store/async-actions/posts/updatePostText';
@@ -54,4 +54,4 @@ const UpdatePostText = ({ closeModal, idPost, text }: IUpdatePostText) => {
   );
 };
 
-export default UpdatePostText;
+export default memo(UpdatePostText);

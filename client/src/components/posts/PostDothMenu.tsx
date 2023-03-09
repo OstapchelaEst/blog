@@ -1,5 +1,5 @@
 import { MenuItem } from '@mui/material';
-import React from 'react';
+import React, { memo } from 'react';
 import { toast } from 'react-toastify';
 import { fetchIgnorePost } from 'store/async-actions/posts/ignorePost';
 import { useAppSelector, useAppDispatch } from 'store/custom-hooks/custom-hooks';
@@ -39,4 +39,4 @@ const PostDothMenu = ({ idPost, handleClose, authorID, text }: IPostDothMenu) =>
   );
 };
 
-export default PostDothMenu;
+export default memo(PostDothMenu);

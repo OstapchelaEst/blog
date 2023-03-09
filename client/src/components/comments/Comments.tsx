@@ -1,20 +1,18 @@
 import { Collapse, CardContent, Typography, Button } from '@mui/material';
 import CommentsFetch from 'http/fetch/comments-fetch';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, memo, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
 import Comment from './Comment';
 import CreateCommentForm from './CreateCommentForm';
 
-const Comments = ({
-  expanded,
-  postId,
-  setCountComments,
-}: {
+interface IComments {
   expanded: boolean | undefined;
   postId: string;
   setCountComments: Dispatch<SetStateAction<number>>;
-}) => {
+}
+
+const Comments = ({ expanded, postId, setCountComments }: IComments) => {
   const [comments, setComments] = useState<IComment[]>([]);
   const [howCommentsShow, setHowCommentsShow] = useState<number>(3);
 
@@ -84,4 +82,4 @@ const Comments = ({
   );
 };
 
-export default Comments;
+export default memo(Comments);

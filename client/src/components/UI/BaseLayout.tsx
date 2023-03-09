@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks'
 import { fetchLogout } from 'store/async-actions/authorization/logout';
 import TransitionsModal from 'components/ModalWindow';
 import CreatePostForm from 'components/posts/CreatePostForm';
+import GroupsIcon from '@mui/icons-material/Groups';
 import { ToastContainer } from 'react-toastify';
 import {
   SearchIconWrapper,
@@ -73,6 +74,11 @@ export default function MiniDrawer() {
       text: 'Posts',
       routh: ROUTHES.POSTS,
       icon: <ArticleIcon />,
+    },
+    {
+      text: 'Customers',
+      routh: ROUTHES.USERS,
+      icon: <GroupsIcon />,
     },
   ];
   const navDataIfUserIsNotAuth = [
