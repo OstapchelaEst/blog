@@ -1,5 +1,4 @@
 import Router from "express";
-import { body } from "express-validator";
 import authController from "../controller/auth-controller.js";
 import commentsController from "../controller/comments-controller.js";
 import postsController from "../controller/posts-controller.js";
@@ -11,12 +10,21 @@ import {
   ValidationChangeCommentText,
   ValidationDeleteComments,
 } from "../validation/validation-comment.js";
-import { createPostValidation } from "../validation/validation-create-post.js";
-import { getAllUserPostsValidation } from "../validation/validation-get-all-user-posts.js";
+import {
+  createPostValidation,
+  getAllUserPostsValidation,
+  getAllPostsValidation,
+  ignoreThisPostValidation,
+  changePostTextValidation,
+  likePostValidation,
+  deletePostValidation,
+} from "../validation/validation-posts.js";
+import { validationUserId } from "../validation/statistic-validation.js";
 import {
   registrationValidation,
   authorizationValidation,
 } from "../validation/validation-registration.js";
+import statisticController from "../controller/statistic-controller.js";
 
 const router = new Router();
 
@@ -36,8 +44,7 @@ router.post("/refresh", authController.refresh);
 
 router.post(
   "/all-posts",
-  body("countSkip", "Тут пусто").notEmpty(),
-  body("userId", "Invalid userId").isMongoId(),
+  getAllPostsValidation,
   isValidToken,
   postsController.getAllPosts
 );
@@ -55,31 +62,25 @@ router.post(
 );
 router.delete(
   "/delete-post",
-  getAllUserPostsValidation,
+  deletePostValidation,
   isValidToken,
   postsController.deletePost
 );
 router.put(
   "/ignore-this-post",
-  body("id", "Invalid post id").isMongoId(),
-  body("idUser", "Invalid user id").isMongoId(),
+  ignoreThisPostValidation,
   isValidToken,
   postsController.ingnoreThisPost
 );
 router.put(
   "/like-post",
-  body("id", "Invalid post id").isMongoId(),
-  body("idUser", "Invalid user id").isMongoId(),
+  likePostValidation,
   isValidToken,
   postsController.likePost
 );
 router.put(
   "/update-post-text",
-  body("id", "Invalid post id").isMongoId(),
-  body("newText", "Invalid text length. Min: 1 , max: 140").isLength({
-    min: 1,
-    max: 140,
-  }),
+  changePostTextValidation,
   isValidToken,
   postsController.updateTextPost
 );
@@ -117,6 +118,13 @@ router.delete(
   isValidToken,
   ValidationDeleteComments,
   commentsController.deleteComment
+);
+
+router.post(
+  "/get-likes-statistic",
+  isValidToken,
+  validationUserId,
+  statisticController.getCountAllpostsLiked
 );
 
 export default router;

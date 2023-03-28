@@ -12,7 +12,5 @@ export const registrationValidation = [
 
 export const authorizationValidation = [
   body("email", "Email не прошёл валидацию").isEmail(),
-  body("password", "Пароль должен содержать минимум 6 символов").isLength({
-    min: 6,
-  }),
+  body("password", "Неверный пароль").notEmpty(),
 ];

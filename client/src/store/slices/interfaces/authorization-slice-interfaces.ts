@@ -5,6 +5,9 @@ export interface IUserData {
   email: string;
   userId: string;
   accessToken: string;
+  _id: string;
+  iat: number;
+  exp: number;
 }
 
 export interface IResponseError {

@@ -1,12 +1,13 @@
 import { Typography } from '@mui/material';
 import React from 'react';
-import { Navigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useAppSelector } from 'store/custom-hooks/custom-hooks';
 const UserPage = () => {
   const { isAuth, userData } = useAppSelector((state) => state.AuthorizationSlice);
-
+  const navigate = useNavigate();
   if (!isAuth || userData === null) {
-    return <Navigate to={'/authorization'} />;
+    navigate('/');
+    return null;
   }
 
   return (

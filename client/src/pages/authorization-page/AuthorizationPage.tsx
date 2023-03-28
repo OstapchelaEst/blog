@@ -2,7 +2,8 @@ import { Box, Button, FormHelperText, Typography } from '@mui/material';
 import CustomInput from 'components/UI/CustomInput';
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { Navigate, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 import { AuthorizationSlice } from 'store/slices/authorization-slice';
@@ -21,11 +22,12 @@ const AuthorizationPage = () => {
   const { resetResponseError } = AuthorizationSlice.actions;
 
   const onSubmit = async (data: FieldValues | Omit<IAuthUser, 'login'>) => {
-    await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>))
-      .unwrap()
-      .then(() => {
-        navigate('/');
-      });
+    try {
+      await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>)).unwrap();
+      navigate('/');
+    } catch (error) {
+      toast('Somthing went wrong...');
+    }
   };
 
   useEffect(() => {
@@ -35,7 +37,8 @@ const AuthorizationPage = () => {
   }, [resetResponseError, dispatch]);
 
   if (isAuth) {
-    return <Navigate to={'/'} />;
+    navigate('/');
+    return null;
   }
 
   return (
@@ -94,11 +97,6 @@ const AuthorizationPage = () => {
             sx={{ mb: 1 }}
             rules={{
               required: true,
-              validate: {
-                customFN: (value) => {
-                  return value.length > 7 ? true : 'Миниму 8 символа';
-                },
-              },
             }}
           />
           <FormHelperText error sx={{ mb: 1 }}>

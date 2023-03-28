@@ -13,7 +13,7 @@ const DeletePost = ({ idPost, closeModal }: IDeletePost) => {
   const dispatch = useAppDispatch();
   const handleClick = async () => {
     try {
-      await dispatch(fetchDeletePost({ id: idPost })).unwrap();
+      await dispatch(fetchDeletePost({ postId: idPost })).unwrap();
       if (closeModal) closeModal();
     } catch (error) {
       toast('Somethin went wrong');

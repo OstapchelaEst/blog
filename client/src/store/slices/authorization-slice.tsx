@@ -1,12 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { checkValidToken, parseJwt } from 'helpers/jwt-decode';
 import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
 import { fetchLogout } from 'store/async-actions/authorization/logout';
 import { fetchCreateUser } from 'store/async-actions/authorization/registration';
 import { IInitialStateAuthorization, IUserData } from './interfaces/authorization-slice-interfaces';
 
+const isValidToken = checkValidToken(localStorage.getItem('token'));
+const userData = isValidToken ? parseJwt(localStorage.getItem('token')) : null;
+
+console.log('VALID TOKEN', isValidToken);
+
 const initialState: IInitialStateAuthorization = {
-  userData: localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')!) : null,
-  isAuth: localStorage.getItem('token') ? true : false,
+  userData: userData,
+  isAuth: isValidToken,
   responseErrors: '',
 };
 
@@ -41,6 +47,8 @@ export const AuthorizationSlice = createSlice({
     builder.addCase(fetchAuthorizationUser.fulfilled, (state, action) => {
       state.userData = action.payload;
       state.isAuth = true;
+      console.log(action.payload);
+
       saveUser(action.payload);
       saveToken(action.payload);
     });

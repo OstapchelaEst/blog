@@ -39,7 +39,7 @@ class PostsController {
     try {
       const errors = validationResult(req);
       checkErrors(errors);
-      const authorID = req.body.id;
+      const authorID = req.body.userId;
       const allPosts = await mongooseServices.findAll(modelPosts, { authorID });
       res.status(200).json(allPosts);
     } catch (error) {
@@ -51,7 +51,7 @@ class PostsController {
     try {
       const errors = validationResult(req);
       checkErrors(errors);
-      const postID = req.body.id;
+      const postID = req.body.postId;
       const isExistPost = await mongooseServices.findByID(modelPosts, postID);
       if (!isExistPost) {
         throw APIerror.BadRequest("Nothing found for this id", []);
