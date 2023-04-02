@@ -9,12 +9,20 @@ interface IDeletePost {
   closeModal?: () => void;
   setComments: Dispatch<SetStateAction<IComment[]>>;
   setCountComments: Dispatch<SetStateAction<number>>;
+  deleteCardAnimation: () => void;
 }
 
-const DeleteComment = ({ commentId, closeModal, setComments, setCountComments }: IDeletePost) => {
+const DeleteComment = ({
+  commentId,
+  closeModal,
+  setComments,
+  setCountComments,
+  deleteCardAnimation,
+}: IDeletePost) => {
   const handleClick = async () => {
     try {
       const response = (await CommentsFetch.fetchDeleteComment({ commentId })) as IComment;
+      deleteCardAnimation();
       setComments((prev) => {
         return prev.filter((comment) => {
           if (comment._id !== response._id) return comment;

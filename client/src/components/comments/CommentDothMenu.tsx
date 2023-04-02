@@ -10,12 +10,14 @@ const CommentDothMenu = ({
   setCommentText,
   setComments,
   setCountComments,
+  deleteCardAnimation,
 }: {
   commentId: string;
   text: string;
   setCommentText: Dispatch<SetStateAction<string>>;
   setComments: Dispatch<SetStateAction<IComment[]>>;
   setCountComments: Dispatch<SetStateAction<number>>;
+  deleteCardAnimation: () => void;
 }) => {
   return (
     <>
@@ -27,6 +29,7 @@ const CommentDothMenu = ({
           commentId={commentId}
           setComments={setComments}
           setCountComments={setCountComments}
+          deleteCardAnimation={deleteCardAnimation}
         />
       </TransitionsModal>
     </>
