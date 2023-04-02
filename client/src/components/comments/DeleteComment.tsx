@@ -1,35 +1,21 @@
 import { Typography, Box, Button } from '@mui/material';
 import CommentsFetch from 'http/fetch/comments-fetch';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
 import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
 
 interface IDeletePost {
   commentId: string;
   closeModal?: () => void;
-  setComments: Dispatch<SetStateAction<IComment[]>>;
-  setCountComments: Dispatch<SetStateAction<number>>;
-  deleteCardAnimation: () => void;
+  deleteCommentAnimation: () => void;
 }
 
-const DeleteComment = ({
-  commentId,
-  closeModal,
-  setComments,
-  setCountComments,
-  deleteCardAnimation,
-}: IDeletePost) => {
+const DeleteComment = ({ commentId, closeModal, deleteCommentAnimation }: IDeletePost) => {
   const handleClick = async () => {
     try {
-      const response = (await CommentsFetch.fetchDeleteComment({ commentId })) as IComment;
-      deleteCardAnimation();
-      setComments((prev) => {
-        return prev.filter((comment) => {
-          if (comment._id !== response._id) return comment;
-        });
-      });
-      setCountComments((prev) => prev - 1);
+      (await CommentsFetch.fetchDeleteComment({ commentId })) as IComment;
       if (closeModal) closeModal();
+      deleteCommentAnimation();
     } catch (error) {
       toast('Server error, sory :(');
     }
