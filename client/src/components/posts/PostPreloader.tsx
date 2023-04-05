@@ -13,10 +13,10 @@ function PostPreloader() {
         subheader={<Skeleton animation="wave" height={10} width="40%" />}
       />
       <CardContent>
-        <React.Fragment>
+        <>
           <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
           <Skeleton animation="wave" height={10} width="80%" />
-        </React.Fragment>
+        </>
       </CardContent>
     </Card>
   );

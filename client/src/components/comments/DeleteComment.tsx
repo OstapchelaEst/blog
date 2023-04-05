@@ -8,14 +8,21 @@ interface IDeletePost {
   commentId: string;
   closeModal?: () => void;
   deleteCommentAnimation: () => void;
+  closeDothMenu: () => void;
 }
 
-const DeleteComment = ({ commentId, closeModal, deleteCommentAnimation }: IDeletePost) => {
+const DeleteComment = ({
+  commentId,
+  closeModal,
+  deleteCommentAnimation,
+  closeDothMenu,
+}: IDeletePost) => {
   const handleClick = async () => {
     try {
       (await CommentsFetch.fetchDeleteComment({ commentId })) as IComment;
       if (closeModal) closeModal();
       deleteCommentAnimation();
+      closeDothMenu();
     } catch (error) {
       toast('Server error, sory :(');
     }

@@ -10,9 +10,9 @@ import CommentDothMenu from './CommentDothMenu';
 import DothMenu from 'components/UI/DothMenu';
 import { IComment } from 'store/slices/interfaces/posts-slice-interfaces';
 import { CommentActions } from './CommentActions';
-import { Box } from '@mui/material';
 
-import '../../styles/animation.scss';
+import '../../styles/delete-comment-animation.scss';
+import '../../styles/create-comment-animation.scss';
 
 interface IPostCard {
   author: string;
@@ -23,6 +23,7 @@ interface IPostCard {
   whoLikes: string[];
   setComments: Dispatch<SetStateAction<IComment[]>>;
   setCountComments: Dispatch<SetStateAction<number>>;
+  setHowCommentsShow: Dispatch<SetStateAction<number>>;
 }
 
 interface AnimationEvent<T = Element> extends React.SyntheticEvent<T> {
@@ -51,10 +52,10 @@ const Comment = ({
   whoLikes,
   setComments,
   setCountComments,
+  setHowCommentsShow,
 }: IPostCard) => {
   console.log('render');
   const cardRef = React.useRef<HTMLDivElement>(null);
-
   const dateCreated = getDate(date);
   const userId = useAppSelector((state) => state.AuthorizationSlice.userData!.userId);
   const [commentText, setCommentText] = useState(text);
@@ -62,16 +63,20 @@ const Comment = ({
   useLayoutEffect(() => {
     const cardRefBlock = cardRef.current as HTMLDivElement;
     cardRefBlock.style.height = cardRefBlock.clientHeight + 'px';
+    cardRefBlock.setAttribute('height', cardRefBlock.clientHeight + 'px');
   }, []);
 
   const deleteCommentAnimation = () => {
     const card = cardRef.current as HTMLDivElement;
     card.classList.add('deleteComment');
+    card.style.animationName = 'deleteCommentAnimation';
   };
 
   const deleteComment = (e: AnimationEvent<HTMLDivElement>) => {
-    if (e.animationName === 'moveToLeftAnimation') {
+    console.log(e);
+    if (e.animationName === 'deleteCommentAnimation') {
       setCountComments((prev) => --prev);
+      setHowCommentsShow((prev) => --prev);
       setComments((prev) => {
         return prev.filter((comment) => {
           if (comment._id !== commentId) return comment;

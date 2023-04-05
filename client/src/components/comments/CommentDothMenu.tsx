@@ -8,11 +8,12 @@ const CommentDothMenu = ({
   commentId,
   text,
   setCommentText,
-
+  handleClose,
   deleteCommentAnimation,
 }: {
   commentId: string;
   text: string;
+  handleClose?: () => void;
   setCommentText: Dispatch<SetStateAction<string>>;
 
   deleteCommentAnimation: () => void;
@@ -23,7 +24,11 @@ const CommentDothMenu = ({
         <ChangeCommentTextForm commentId={commentId} text={text} setCommentText={setCommentText} />
       </TransitionsModal>
       <TransitionsModal buttonText={'Delete comment'}>
-        <DeleteComment commentId={commentId} deleteCommentAnimation={deleteCommentAnimation} />
+        <DeleteComment
+          closeDothMenu={handleClose!}
+          commentId={commentId}
+          deleteCommentAnimation={deleteCommentAnimation}
+        />
       </TransitionsModal>
     </>
   );

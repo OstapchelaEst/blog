@@ -1,4 +1,4 @@
-import { Avatar, Card, Typography } from '@mui/material';
+import { Avatar, Card, Skeleton, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import { AxiosResponse } from 'axios';
@@ -7,9 +7,8 @@ import { StatisticFetchs } from 'http/fetch/statistics-fetch';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IPost } from 'store/slices/interfaces/posts-slice-interfaces';
-import { UserCardSekeleton } from './UserCardSkeleton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import PostAddIcon from '@mui/icons-material/PostAdd';
+import { contentOrSkeleton } from 'helpers/content-or-skeleton';
 
 interface IUserCard {
   name: string;
@@ -21,6 +20,7 @@ const UserCard = ({ name, email, userId }: IUserCard) => {
   const [countPosts, setCountPosts] = useState<number>(0);
   const [countLikes, setCountLikes] = useState<number>(0);
   const [isLoading, setISLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const getAllUserPosts = async () => {
       try {
@@ -30,28 +30,27 @@ const UserCard = ({ name, email, userId }: IUserCard) => {
         const countPostsLiked = (await StatisticFetchs.getCountAllLikedPostst({
           userId,
         })) as AxiosResponse<{ countLikes: number }>;
-
         setCountPosts(countPosts.data.length);
         setCountLikes(countPostsLiked.data.countLikes);
         setISLoading(false);
       } catch (error) {
         toast('Somthing went wrong');
-        console.log(error);
       }
     };
     getAllUserPosts();
   }, []);
-  return isLoading ? (
-    <UserCardSekeleton />
-  ) : (
+
+  return (
     <Card
       sx={{
         p: 2,
         mb: 2,
         display: 'flex',
         columnGap: 2,
-        width: '40%',
+        maxWidth: '40%',
+        width: '100%',
         minWidth: '360px',
+        mr: 'auto',
       }}
     >
       <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -60,25 +59,26 @@ const UserCard = ({ name, email, userId }: IUserCard) => {
       <Box
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
+          flexDirection: 'column',
           gap: 3,
+          flex: '1 1',
         }}
       >
         <Box>
           <Typography color="primary" fontSize={20} fontWeight={900}>
             Information:
           </Typography>
-          <Typography>Name: {name}</Typography>
-          <Typography>Mail: {email}</Typography>
+          {contentOrSkeleton(isLoading, `Name: ${name}`, '50%')}
+          {contentOrSkeleton(isLoading, `Mail: ${email}`, '80%')}
         </Box>
         <Box>
           <Typography color="primary" fontSize={20} fontWeight={900}>
             Statistic:
           </Typography>
-          <Typography>{`Number of posts created: ${countPosts}`}</Typography>
-          <Box sx={{ display: 'flex' }}>
-            <Typography>{`Liked posts for all time: ${countLikes}`}</Typography>
-            <FavoriteIcon sx={{ color: 'red', ml: 1 }} />
+          {contentOrSkeleton(isLoading, `Number of posts created: ${countPosts}`, '90%')}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {contentOrSkeleton(isLoading, `Liked posts for all time: ${countLikes}`)}
+            <FavoriteIcon sx={{ color: `${isLoading ? 'greey' : 'red'}`, ml: 1 }} />
           </Box>
         </Box>
       </Box>

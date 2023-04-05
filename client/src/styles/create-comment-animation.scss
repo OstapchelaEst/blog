@@ -1,0 +1,20 @@
+@keyframes createCommentAnimation {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.comments-list.allow > :last-child {
+  transform: scale(0);
+  animation-name: createCommentAnimation;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-duration: 0.6s;
+  animation-delay: 0.3s;
+}
