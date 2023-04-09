@@ -32,15 +32,15 @@ class AuthController {
         const allErrors = [];
         const errorsArr = [];
         if (candidateLogin) {
-          allErrors.push("Пользователь с таким логином уже существует");
+          allErrors.push("User with this login alredy exists");
           errorsArr.push({
-            login: "Пользователь с таким логином уже существует",
+            login: "User with this login alredy exists",
           });
         }
         if (candidateEmail) {
-          allErrors.push("Пользователь с таким email  уже существует");
+          allErrors.push("User with this email alredy exists");
           errorsArr.push({
-            email: "Пользователь с таким email  уже существует",
+            email: "User with this email alredy exists",
           });
         }
         throw APIerror.BadRequest(allErrors.join(". "), errorsArr);
@@ -84,8 +84,8 @@ class AuthController {
       );
 
       if (!isUserExist) {
-        throw APIerror.BadRequest("Пользователя с такой почтой не существует", [
-          { email: "Пользователя с такой почтой не существует" },
+        throw APIerror.BadRequest("User with this email alredy exists", [
+          { email: "User with this email alredy exists" },
         ]);
       }
 
@@ -95,8 +95,8 @@ class AuthController {
       );
 
       if (!isValidPassword) {
-        throw APIerror.BadRequest("Не верный пароль", [
-          { password: "Неверный пароль" },
+        throw APIerror.BadRequest("Wrong password", [
+          { password: "Wrong password" },
         ]);
       }
 

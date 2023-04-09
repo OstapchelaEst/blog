@@ -1,16 +1,16 @@
 import { body } from "express-validator";
 
 export const registrationValidation = [
-  body("email", "Email не прошёл валидацию").isEmail(),
-  body("login", "Логин должен содержать минимум 3 символа").isLength({
+  body("email", "Email is not valid").isEmail(),
+  body("login", "Logint mast has minimum 3 symbols").isLength({
     min: 3,
   }),
-  body("password", "Пароль должен содержать минимум 6 символов").isLength({
+  body("password", "Password mast has minimum 6 symbols").isLength({
     min: 6,
   }),
 ];
 
 export const authorizationValidation = [
-  body("email", "Email не прошёл валидацию").isEmail(),
-  body("password", "Неверный пароль").notEmpty(),
+  body("email", "Email is not valid").isEmail(),
+  body("password", "Wrong password").notEmpty(),
 ];

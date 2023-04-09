@@ -1,12 +1,12 @@
 import { body } from "express-validator";
 
 export const createPostValidation = [
-  body("text", "Поле text обязательное").isLength({
+  body("text", "Field text required").isLength({
     min: 1,
     max: 140,
   }),
-  body("author", "Поле author обязательное").notEmpty(),
-  body("authorID", "Поле authorID обязательное").notEmpty(),
+  body("author", "Field author required").notEmpty(),
+  body("authorID", "Field authorID required").notEmpty(),
 ];
 
 export const getAllUserPostsValidation = [

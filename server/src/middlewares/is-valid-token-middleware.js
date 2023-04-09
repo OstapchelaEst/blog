@@ -9,7 +9,7 @@ export const isValidToken = (req, res, next) => {
       const decode = jwt.verify(token, SECRET_ACCESS_TOKEN_KEY);
       next();
     } else {
-      throw APIerror.UnauthorizedError("Не валидный токен");
+      throw APIerror.UnauthorizedError("Token is not valid");
     }
   } catch (error) {
     next(error);
