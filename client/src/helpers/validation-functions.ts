@@ -6,7 +6,7 @@ export const validationLengthPost = (str: string): string | true => {
 };
 
 export const validationFirstPassord = (firstPassword: string): true | string => {
-  return firstPassword.length > 5 ? true : 'Миниму 6 символа';
+  return firstPassword.length > 5 ? true : 'Minimum 6 symbols';
 };
 
 export const validationSecondPassword = (
@@ -19,15 +19,15 @@ export const validationSecondPassword = (
       return validationFirstPassord(secondPassword);
     }
   } else {
-    return 'Пароль в первом поле не введён';
+    return 'First password field is empty';
   }
-  return 'Пароли не одинаковы';
+  return 'Passwords are not the same';
 };
 
 export const validationEmail = (email: string): true | string => {
   const EMAIL_REGEXP =
     /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
-  return EMAIL_REGEXP.test(email) ? true : 'Не валидный E-mail';
+  return EMAIL_REGEXP.test(email) ? true : 'Email is not valid';
 };
 
 export const setValidationErrors = (

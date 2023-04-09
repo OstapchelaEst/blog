@@ -24,10 +24,8 @@ const AuthorizationPage = () => {
   const onSubmit = async (data: FieldValues | Omit<IAuthUser, 'login'>) => {
     try {
       await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>)).unwrap();
-      navigate('/');
-    } catch (error) {
-      toast('Somthing went wrong...');
-    }
+      navigate('/posts');
+    } catch (error) {}
   };
 
   useEffect(() => {

@@ -56,7 +56,7 @@ const RegistrationForm = () => {
           required: true,
           validate: {
             customFN: (value) => {
-              return value.length > 2 ? true : 'Миниму 3 символа';
+              return value.length > 2 ? true : 'Minimum 3 symbols';
             },
           },
         }}
