@@ -1,4 +1,4 @@
-import { Avatar, Card, Skeleton, Typography } from '@mui/material';
+import { Avatar, Card, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import { AxiosResponse } from 'axios';
@@ -43,14 +43,12 @@ const UserCard = ({ name, email, userId }: IUserCard) => {
   return (
     <Card
       sx={{
+        justifySelf: 'flex-start',
         p: 2,
-        mb: 2,
         display: 'flex',
         columnGap: 2,
-        maxWidth: '40%',
         width: '100%',
         minWidth: '360px',
-        mr: 'auto',
       }}
     >
       <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">

@@ -23,7 +23,7 @@ const CreateCommentForm = ({
   allCommentsLength,
   setCountComments,
 }: ICreateCommentForm) => {
-  const { control, reset, handleSubmit } = useForm({ mode: 'onSubmit' });
+  const { control, reset, handleSubmit } = useForm({ mode: 'all' });
   const userData = useAppSelector((state) => state.AuthorizationSlice.userData);
 
   const formRef = useRef<HTMLFormElement>(null);

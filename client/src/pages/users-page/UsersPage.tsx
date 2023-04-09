@@ -19,7 +19,18 @@ const UsersPage = () => {
     getUsers();
   }, []);
   return (
-    <Box display="flex" flexWrap="wrap" justifyContent="center" gap="2rem">
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2,0.5fr)',
+        '@media (max-width: 800px)': { gridTemplateColumns: 'repeat(1,1fr)' },
+        justifyContent: 'center',
+        gap: 2,
+        maxWidth: '1200px',
+        width: '100%',
+        margin: '0 auto',
+      }}
+    >
       {users.map((user) => {
         return (
           <UserCard
