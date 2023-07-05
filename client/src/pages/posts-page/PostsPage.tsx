@@ -1,7 +1,6 @@
 import PostCard from 'components/posts/PostCard';
 import PostPreloader from 'components/posts/PostPreloader';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { fetchGetPosts } from 'store/async-actions/posts/getPosts';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
@@ -10,14 +9,13 @@ import { postsSlice } from 'store/slices/posts-slice';
 
 const PostsPage = () => {
   const dispatch = useAppDispatch();
-  const { isAuth, userData } = useAppSelector((state) => state.AuthorizationSlice);
+  const { userData } = useAppSelector((state) => state.AuthorizationSlice);
   const { allPostsCount, posts } = useAppSelector((state) => state.PostsSlice);
-  const { resetPostst } = postsSlice.actions;
+  const { resetPosts } = postsSlice.actions;
   const { stopLoading, startLoading } = loadingSlice.actions;
   const [isLoading, setIsLoading] = useState(false);
   const containerRef = useRef(null);
   const countSkip = useRef(0);
-  const navigate = useNavigate();
 
   const getPosts = async () => {
     try {
@@ -35,9 +33,9 @@ const PostsPage = () => {
   useEffect(() => {
     getPosts();
     return () => {
-      dispatch(resetPostst());
+      dispatch(resetPosts());
     };
-  }, [dispatch, resetPostst]);
+  }, [dispatch, resetPosts]);
 
   const postObserver = useMemo(() => {
     return new IntersectionObserver((entries) => {
@@ -65,10 +63,6 @@ const PostsPage = () => {
       });
     });
   }, [allPostsCount, dispatch]);
-
-  if (!isAuth) {
-    navigate('/authorization');
-  }
 
   useEffect(() => {
     if (containerRef.current) postObserver.observe(containerRef.current);

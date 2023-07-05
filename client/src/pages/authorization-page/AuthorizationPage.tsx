@@ -3,10 +3,10 @@ import CustomInput from 'components/UI/CustomInput';
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { toast } from 'react-toastify';
 import { fetchAuthorizationUser } from 'store/async-actions/authorization/authorization';
 import { useAppDispatch, useAppSelector } from 'store/custom-hooks/custom-hooks';
 import { AuthorizationSlice } from 'store/slices/authorization-slice';
+import { loadingSlice } from 'store/slices/loading-slice';
 import { IAuthUser } from '../registration-page/RegistrationPage';
 
 const AuthorizationPage = () => {
@@ -15,17 +15,21 @@ const AuthorizationPage = () => {
     handleSubmit,
     formState: { isValid },
   } = useForm({ mode: 'onBlur' });
-
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { responseErrors, isAuth } = useAppSelector((state) => state.AuthorizationSlice);
   const { resetResponseError } = AuthorizationSlice.actions;
+  const { startLoading, stopLoading } = loadingSlice.actions;
 
   const onSubmit = async (data: FieldValues | Omit<IAuthUser, 'login'>) => {
     try {
+      dispatch(startLoading());
       await dispatch(fetchAuthorizationUser(data as Omit<IAuthUser, 'login'>)).unwrap();
+      dispatch(stopLoading());
       navigate('/posts');
-    } catch (error) {}
+    } catch (error) {
+      dispatch(stopLoading());
+    }
   };
 
   useEffect(() => {

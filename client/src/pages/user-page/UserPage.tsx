@@ -1,7 +1,11 @@
 import { Avatar, Box, Typography } from '@mui/material';
+import { StatisticPostsAndLikes } from 'components/statistics/StatisticPostsAndLikes';
+import { UserCardWrapper } from 'components/user-card/UserCardWrapper';
+import { UserLoginAndEmail } from 'components/user-card/UserLoginAndEmail';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useAppSelector } from 'store/custom-hooks/custom-hooks';
+
 const UserPage = () => {
   const { isAuth, userData } = useAppSelector((state) => state.AuthorizationSlice);
   const navigate = useNavigate();
@@ -15,38 +19,44 @@ const UserPage = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '90%' }}>
-      <Box
-        sx={{
-          wordBreak: 'break-word',
-          maxWidth: '70%',
-          backgroundColor: 'white',
-          p: 3,
-          borderRadius: '8px',
-        }}
-      >
-        <Box sx={{ display: 'flex', columnGap: 3, alignItems: 'center' }}>
-          <Avatar
-            sx={{ border: '5px solid #1976d2', width: 100, height: 100, fontSize: 45, mb: 2 }}
-          >
-            {userData.login[0]}
-          </Avatar>
-          <Box>
-            <Typography sx={{ mb: 1 }}>
-              <span style={spanStyles}>Login:</span> {userData.login}
-            </Typography>
-            <Typography>
-              <span style={spanStyles}>Email:</span> {userData.email}
-            </Typography>
-          </Box>
-        </Box>
-        <Typography>
-          <span style={spanStyles}>ID:</span> {userData.userId}
-        </Typography>
-        <Typography>
-          <span style={spanStyles}>Token:</span> {userData.accessToken}
-        </Typography>
-      </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '90%',
+        flexDirection: 'column',
+        maxWidth: '80vw',
+        gap: 3,
+        m: '0 auto',
+      }}
+    >
+      <UserCardWrapper>
+        <>
+          <UserLoginAndEmail
+            login={userData.login}
+            email={userData.email}
+            avatarSettings={{
+              border: '5px solid #1976d2',
+              width: 100,
+              height: 100,
+              fontSize: 45,
+              mb: 2,
+            }}
+            withAvatar={true}
+          />
+
+          <Typography>
+            <span style={spanStyles}>ID:</span> {userData.userId}
+          </Typography>
+          <Typography>
+            <span style={spanStyles}>Token:</span> {userData.accessToken}
+          </Typography>
+        </>
+      </UserCardWrapper>
+      <UserCardWrapper>
+        <StatisticPostsAndLikes userId={userData.userId} />
+      </UserCardWrapper>
     </Box>
   );
 };

@@ -1,0 +1,26 @@
+.fade-animation-skeleton {
+  animation: fadeSkeleton 0.5s ease forwards; //delay iteration-count direction fill-mode;
+}
+
+@keyframes fadeSkeleton {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fade-animation-value {
+  opacity: 0;
+  animation: fadeValue 0.3s ease forwards;
+}
+
+@keyframes fadeValue {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
